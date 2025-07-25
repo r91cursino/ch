@@ -781,6 +781,96 @@
                 margin: 1rem;
             }
         }
+
+        /* Estilos para o Requerimento Editável */
+        .requerimento-section {
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+        }
+
+        .requerimento-container {
+            background: white;
+            border-radius: 6px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .requerimento-header h4 {
+            color: var(--primary-color);
+            font-weight: bold;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .requerimento-section-item {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            border: 1px solid #e0e6ed;
+            border-radius: 6px;
+            background: #fafbfc;
+        }
+
+        .requerimento-section-item h5 {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 0.8rem;
+        }
+
+        .form-grid-requerimento {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group-small {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group-small label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.3rem;
+        }
+
+        .form-group-small input,
+        .form-group-small select {
+            padding: 0.6rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group-small input:focus,
+        .form-group-small select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .form-grid-requerimento {
+                grid-template-columns: 1fr;
+            }
+            
+            .requerimento-section {
+                padding: 1rem;
+                margin: 1rem 0;
+            }
+            
+            .requerimento-container {
+                padding: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -892,7 +982,7 @@
                 <!-- Stats Cards -->
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <h3 id="totalProtestos">156</h3>
+                        <h3 id="totalProtestos" data-stat="total-protestos">5</h3>
                         <p>Total de Protestos</p>
                         <span class="trend up">↗ +12% este mês</span>
                         <div class="progress-bar">
@@ -900,7 +990,7 @@
                         </div>
                     </div>
                     <div class="stat-card">
-                        <h3 id="protestosAtivos">89</h3>
+                        <h3 id="protestosAtivos" data-stat="protestos-ativos">2</h3>
                         <p>Protestos Ativos</p>
                         <span class="trend up">↗ +8% esta semana</span>
                         <div class="progress-bar">
@@ -908,7 +998,7 @@
                         </div>
                     </div>
                     <div class="stat-card">
-                        <h3 id="valorCobranca">R$ 245.800</h3>
+                        <h3 id="valorCobranca" data-stat="valor-cobranca">R$ 28.300,00</h3>
                         <p>Valor em Cobrança</p>
                         <span class="trend down">↘ -3% este mês</span>
                         <div class="progress-bar">
@@ -916,7 +1006,7 @@
                         </div>
                     </div>
                     <div class="stat-card">
-                        <h3 id="taxaSucesso">92%</h3>
+                        <h3 id="taxaSucesso" data-stat="taxa-sucesso">40%</h3>
                         <p>Taxa de Sucesso</p>
                         <span class="trend up">↗ +5% este mês</span>
                         <div class="progress-bar">
@@ -1501,6 +1591,11 @@
                     </div>
                 </div>
 
+                <!-- Container para resultados da pesquisa -->
+                <div id="resultados-pesquisa" style="display: none; margin-top: 2rem;">
+                    <!-- Resultados serão inseridos aqui pelo JavaScript -->
+                </div>
+
                 <div id="resultadoPesquisa" class="card" style="display: none; margin-top: 2rem;">
                     <div class="card-header">
                         <h3>Resultado da Pesquisa</h3>
@@ -1828,6 +1923,196 @@
                     <div class="form-group">
                         <label>Observações</label>
                         <textarea name="observacoes" rows="3" placeholder="Informações adicionais sobre o protesto"></textarea>
+                    </div>
+
+                    <!-- Seção do Requerimento Editável -->
+                    <div class="form-group requerimento-section">
+                        <label style="font-weight: bold; color: var(--primary-color); margin-bottom: 1rem; display: block;">
+                            📄 Requerimento para Protesto (Editável)
+                        </label>
+                        <div class="requerimento-container">
+                            <div class="requerimento-header">
+                                <h4 style="text-align: center; margin-bottom: 1rem; color: var(--text-color);">
+                                    Duplicata por Indicação com Requerimento para Protesto
+                                </h4>
+                                <p style="text-align: justify; font-size: 0.9rem; line-height: 1.5; margin-bottom: 1.5rem;">
+                                    Nos termos do art. 2°, I°, do Provimento n° 87 de 2019 do Conselho Nacional de Justiça, solicito o protesto do título abaixo indicado, 
+                                    declarando para os devidos fins que sob as penas constantes da lei, que a dívida em questão constitui dívida líquida, certa e 
+                                    exigível, comprobatórias da causa que ensejou a apresentação para protesto, são mantidas em nosso poder, comprometendo-nos a 
+                                    exibi-las sempre que exigidas no lugar onde for determinado, especialmente se sobrevier sustação judicial do protesto.
+                                </p>
+                            </div>
+
+                            <!-- 1) Identificação do Título ou Documento de Dívida -->
+                            <div class="requerimento-section-item">
+                                <h5>1) Identificação do Título ou Documento de Dívida</h5>
+                                <div class="form-grid-requerimento">
+                                    <div class="form-group-small">
+                                        <label>Espécie:</label>
+                                        <input type="text" name="req_especie" placeholder="Ex: Duplicata">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Banco (p/ Cheque):</label>
+                                        <input type="text" name="req_banco" placeholder="Nome do banco">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Nº do Título:</label>
+                                        <input type="text" name="req_numero_titulo" placeholder="Número">
+                                    </div>
+                                </div>
+                                <div class="form-grid-requerimento">
+                                    <div class="form-group-small">
+                                        <label>Data Emissão:</label>
+                                        <input type="date" name="req_data_emissao">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Data Vencimento:</label>
+                                        <input type="date" name="req_data_vencimento">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Praça de Pagamento:</label>
+                                        <input type="text" name="req_praca_pagamento" value="DOURADOS-MS">
+                                    </div>
+                                </div>
+                                <div class="form-grid-requerimento">
+                                    <div class="form-group-small">
+                                        <label>Valor do Título R$:</label>
+                                        <input type="number" name="req_valor_titulo" step="0.01" placeholder="0,00">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Valor a Protestar R$:</label>
+                                        <input type="number" name="req_valor_protestar" step="0.01" placeholder="0,00">
+                                    </div>
+                                    <div class="form-group-small"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Observações:</label>
+                                    <textarea name="req_observacoes_titulo" rows="2" placeholder="Observações sobre o título"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- 2) Identificação do Devedor -->
+                            <div class="requerimento-section-item">
+                                <h5>2) Identificação do Devedor</h5>
+                                <div class="form-group">
+                                    <label>Nome:</label>
+                                    <input type="text" name="req_devedor_nome" placeholder="Nome completo do devedor">
+                                </div>
+                                <div class="form-grid-requerimento">
+                                    <div class="form-group-small">
+                                        <label>CPF:</label>
+                                        <input type="text" name="req_devedor_cpf" placeholder="000.000.000-00">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Telefone:</label>
+                                        <input type="text" name="req_devedor_telefone" placeholder="(67) 00000-0000">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>CEP:</label>
+                                        <input type="text" name="req_devedor_cep" placeholder="00000-000">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Endereço:</label>
+                                    <input type="text" name="req_devedor_endereco" placeholder="Rua, número, complemento">
+                                </div>
+                                <div class="form-grid-requerimento">
+                                    <div class="form-group-small">
+                                        <label>Bairro:</label>
+                                        <input type="text" name="req_devedor_bairro" placeholder="Bairro">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Cidade:</label>
+                                        <input type="text" name="req_devedor_cidade" placeholder="Cidade">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Estado:</label>
+                                        <input type="text" name="req_devedor_estado" placeholder="UF" maxlength="2">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 3) Identificação do Credor e Apresentante a protesto -->
+                            <div class="requerimento-section-item">
+                                <h5>3) Identificação do Credor e Apresentante a protesto:</h5>
+                                <div class="form-group">
+                                    <label>Nome:</label>
+                                    <input type="text" name="req_credor_nome" placeholder="Nome/Razão Social do credor">
+                                </div>
+                                <div class="form-grid-requerimento">
+                                    <div class="form-group-small">
+                                        <label>CPF/CNPJ:</label>
+                                        <input type="text" name="req_credor_documento" placeholder="000.000.000-00 ou 00.000.000/0001-00">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Telefone:</label>
+                                        <input type="text" name="req_credor_telefone" placeholder="(67) 00000-0000">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>CEP:</label>
+                                        <input type="text" name="req_credor_cep" placeholder="00000-000">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Endereço:</label>
+                                    <input type="text" name="req_credor_endereco" placeholder="Rua, número, complemento">
+                                </div>
+                                <div class="form-grid-requerimento">
+                                    <div class="form-group-small">
+                                        <label>Bairro:</label>
+                                        <input type="text" name="req_credor_bairro" placeholder="Bairro">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Cidade:</label>
+                                        <input type="text" name="req_credor_cidade" placeholder="Cidade">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Estado:</label>
+                                        <input type="text" name="req_credor_estado" placeholder="UF" maxlength="2">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Texto de autorização -->
+                            <div class="requerimento-section-item">
+                                <p style="text-align: justify; font-size: 0.85rem; line-height: 1.4; margin: 1rem 0;">
+                                    <strong>Autorizo a publicação de edital caso o devedor não seja encontrado no endereço fornecido.</strong> 
+                                    No caso de Duplicatas, declaro ter documento comprobatório da origem do título e/ou da efetiva entrega da mercadoria/ 
+                                    prestação do serviço, apresentando-o quando exigido. Responsabilizo-me civil e criminalmente pelas informações 
+                                    abaixo declaradas.
+                                </p>
+                            </div>
+
+                            <!-- Dados bancários para transferência -->
+                            <div class="requerimento-section-item">
+                                <h5>No caso de pagamento pelo devedor, autorizo a transferência dos valores para a seguinte conta ou pelo PIX:</h5>
+                                <div class="form-grid-requerimento">
+                                    <div class="form-group-small">
+                                        <label>Banco:</label>
+                                        <input type="text" name="req_banco_transferencia" placeholder="Nome do banco">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Agência:</label>
+                                        <input type="text" name="req_agencia" placeholder="0000">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Conta:</label>
+                                        <input type="text" name="req_conta" placeholder="00000-0">
+                                    </div>
+                                </div>
+                                <div class="form-grid-requerimento">
+                                    <div class="form-group-small">
+                                        <label>Titular:</label>
+                                        <input type="text" name="req_titular_conta" placeholder="Nome do titular da conta">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>CPF/CNPJ:</label>
+                                        <input type="text" name="req_titular_documento" placeholder="000.000.000-00">
+                                    </div>
+                                    <div class="form-group-small"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group">

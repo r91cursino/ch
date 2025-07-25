@@ -79,6 +79,34 @@ def criar_protesto():
             urgente=data.get('urgente', False)
         )
         
+        # Adicionar campos do requerimento se fornecidos
+        campos_requerimento = [
+            'req_especie', 'req_banco', 'req_numero_titulo', 'req_data_emissao', 'req_data_vencimento',
+            'req_praca_pagamento', 'req_valor_titulo', 'req_valor_protestar', 'req_observacoes_titulo',
+            'req_devedor_nome', 'req_devedor_cpf', 'req_devedor_telefone', 'req_devedor_cep',
+            'req_devedor_endereco', 'req_devedor_bairro', 'req_devedor_cidade', 'req_devedor_estado',
+            'req_credor_nome', 'req_credor_documento', 'req_credor_telefone', 'req_credor_cep',
+            'req_credor_endereco', 'req_credor_bairro', 'req_credor_cidade', 'req_credor_estado',
+            'req_banco_transferencia', 'req_agencia', 'req_conta', 'req_titular_conta', 'req_titular_documento'
+        ]
+        
+        for campo in campos_requerimento:
+            if campo in data and data[campo]:
+                if 'data_' in campo and data[campo]:
+                    # Converter datas
+                    try:
+                        setattr(protesto, campo, datetime.fromisoformat(data[campo]).date())
+                    except:
+                        pass
+                elif 'valor_' in campo and data[campo]:
+                    # Converter valores
+                    try:
+                        setattr(protesto, campo, float(data[campo]))
+                    except:
+                        pass
+                else:
+                    setattr(protesto, campo, data[campo])
+        
         db.session.add(protesto)
         db.session.commit()
         
