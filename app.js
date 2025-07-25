@@ -1,725 +1,603 @@
-// ProtestoPro - Sistema de Gestão de Protestos
-// Arquivo principal de funcionalidades JavaScript
+// ProtestoPro - Integração Frontend-Backend
+// Configuração da API
+const API_BASE_URL = '/api';
 
-// === DADOS SIMULADOS ===
-const dadosSimulados = {
-    protestos: [
-        {
-            id: 1,
-            cliente: "João Silva & Cia",
-            documento: "Duplicata 1234",
-            valor: 15500.00,
-            status: "pending",
-            dataCriacao: "2025-07-15",
-            dataVencimento: "2025-07-25",
-            protocolo: "#001",
-            observacoes: "Protesto urgente"
-        },
-        {
-            id: 2,
-            cliente: "Maria Santos LTDA",
-            documento: "Nota Promissória 5678",
-            valor: 8200.00,
-            status: "completed",
-            dataCriacao: "2025-07-14",
-            dataVencimento: "2025-07-20",
-            protocolo: "#002",
-            observacoes: "Protesto concluído com sucesso"
-        },
-        {
-            id: 3,
-            cliente: "Pedro Oliveira ME",
-            documento: "Cheque 9012",
-            valor: 22100.00,
-            status: "rejected",
-            dataCriacao: "2025-07-13",
-            dataVencimento: "2025-07-18",
-            protocolo: "#003",
-            observacoes: "Documentação insuficiente"
-        },
-        {
-            id: 4,
-            cliente: "Ana Costa Comércio",
-            documento: "Duplicata 3456",
-            valor: 12800.00,
-            status: "pending",
-            dataCriacao: "2025-07-16",
-            dataVencimento: "2025-07-26",
-            protocolo: "#004",
-            observacoes: "Aguardando confirmação"
-        },
-        {
-            id: 5,
-            cliente: "Carlos Ferreira LTDA",
-            documento: "Contrato 7890",
-            valor: 35600.00,
-            status: "completed",
-            dataCriacao: "2025-07-12",
-            dataVencimento: "2025-07-22",
-            protocolo: "#005",
-            observacoes: "Protesto finalizado"
-        }
-    ],
-    
-    clientes: [
-        {
-            id: 1,
-            nome: "João Silva & Cia",
-            tipo: "juridica",
-            documento: "12.345.678/0001-90",
-            email: "contato@joaosilva.com",
-            telefone: "(11) 99999-9999",
-            protestosAtivos: 3,
-            endereco: "Rua das Flores, 123 - Centro - São Paulo/SP",
-            dataCadastro: "2025-01-15"
-        },
-        {
-            id: 2,
-            nome: "Maria Santos",
-            tipo: "fisica",
-            documento: "123.456.789-00",
-            email: "maria@email.com",
-            telefone: "(11) 88888-8888",
-            protestosAtivos: 1,
-            endereco: "Av. Paulista, 456 - Bela Vista - São Paulo/SP",
-            dataCadastro: "2025-02-20"
-        },
-        {
-            id: 3,
-            nome: "Pedro Oliveira ME",
-            tipo: "juridica",
-            documento: "98.765.432/0001-10",
-            email: "pedro@oliveira.com",
-            telefone: "(11) 77777-7777",
-            protestosAtivos: 2,
-            endereco: "Rua Augusta, 789 - Consolação - São Paulo/SP",
-            dataCadastro: "2025-03-10"
-        },
-        {
-            id: 4,
-            nome: "Ana Costa",
-            tipo: "fisica",
-            documento: "987.654.321-00",
-            email: "ana@costa.com",
-            telefone: "(11) 66666-6666",
-            protestosAtivos: 1,
-            endereco: "Rua Oscar Freire, 321 - Jardins - São Paulo/SP",
-            dataCadastro: "2025-04-05"
-        }
-    ],
-    
-    certidoes: [
-        {
-            id: 1,
-            protocolo: "#CERT001",
-            cliente: "João Silva",
-            documento: "123.456.789-00",
-            tipo: "positiva",
-            status: "completed",
-            dataSolicitacao: "2025-07-20",
-            dataEmissao: "2025-07-21",
-            finalidade: "Participação em licitação"
-        },
-        {
-            id: 2,
-            protocolo: "#CERT002",
-            cliente: "Maria Santos LTDA",
-            documento: "12.345.678/0001-90",
-            tipo: "negativa",
-            status: "pending",
-            dataSolicitacao: "2025-07-21",
-            dataEmissao: null,
-            finalidade: "Financiamento bancário"
-        },
-        {
-            id: 3,
-            protocolo: "#CERT003",
-            cliente: "Pedro Oliveira",
-            documento: "987.654.321-00",
-            tipo: "detalhada",
-            status: "completed",
-            dataSolicitacao: "2025-07-19",
-            dataEmissao: "2025-07-20",
-            finalidade: "Comprovação para seguro"
-        }
-    ],
-    
-    pesquisas: [
-        {
-            id: 1,
-            dataHora: "2025-07-24 14:30",
-            tipo: "cpf",
-            consultado: "123.456.789-00",
-            resultados: 2,
-            protestosEncontrados: [
-                {
-                    protocolo: "#P001",
-                    cartorio: "1º Cartório de Protestos",
-                    valor: 5500.00,
-                    dataProtesto: "2025-06-15",
-                    status: "ativo"
-                },
-                {
-                    protocolo: "#P002",
-                    cartorio: "2º Cartório de Protestos",
-                    valor: 3200.00,
-                    dataProtesto: "2025-05-20",
-                    status: "quitado"
-                }
-            ]
-        },
-        {
-            id: 2,
-            dataHora: "2025-07-24 10:15",
-            tipo: "cnpj",
-            consultado: "12.345.678/0001-90",
-            resultados: 0,
-            protestosEncontrados: []
-        }
-    ]
-};
+// Utilitários para requisições HTTP
+class ApiClient {
+    static async request(endpoint, options = {}) {
+        const url = `${API_BASE_URL}${endpoint}`;
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            },
+            ...options
+        };
 
-// === UTILITÁRIOS ===
-const utils = {
-    formatarMoeda: (valor) => {
+        try {
+            const response = await fetch(url, config);
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error || `HTTP error! status: ${response.status}`);
+            }
+            
+            return data;
+        } catch (error) {
+            console.error('API Error:', error);
+            throw error;
+        }
+    }
+
+    static async get(endpoint) {
+        return this.request(endpoint);
+    }
+
+    static async post(endpoint, data) {
+        return this.request(endpoint, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+    }
+
+    static async put(endpoint, data) {
+        return this.request(endpoint, {
+            method: 'PUT',
+            body: JSON.stringify(data)
+        });
+    }
+
+    static async delete(endpoint) {
+        return this.request(endpoint, {
+            method: 'DELETE'
+        });
+    }
+}
+
+// Gerenciador de dados do Dashboard
+class DashboardManager {
+    static async carregarEstatisticas() {
+        try {
+            const response = await ApiClient.get('/dashboard/estatisticas');
+            this.atualizarCards(response.data);
+        } catch (error) {
+            console.error('Erro ao carregar estatísticas:', error);
+            showNotification('Erro ao carregar estatísticas do dashboard', 'error');
+        }
+    }
+
+    static atualizarCards(data) {
+        // Atualizar cards do dashboard com dados reais
+        const cards = {
+            'total-protestos': data.protestos.total,
+            'protestos-ativos': data.protestos.ativos,
+            'valor-cobranca': this.formatarMoeda(data.protestos.valor_cobranca),
+            'taxa-sucesso': `${data.protestos.taxa_sucesso}%`
+        };
+
+        Object.entries(cards).forEach(([id, valor]) => {
+            const elemento = document.querySelector(`[data-stat="${id}"]`);
+            if (elemento) {
+                elemento.textContent = valor;
+            }
+        });
+    }
+
+    static formatarMoeda(valor) {
         return new Intl.NumberFormat('pt-BR', {
             style: 'currency',
             currency: 'BRL'
         }).format(valor);
-    },
-    
-    formatarData: (data) => {
-        return new Date(data).toLocaleDateString('pt-BR');
-    },
-    
-    formatarDataHora: (dataHora) => {
-        return new Date(dataHora).toLocaleString('pt-BR');
-    },
-    
-    obterStatusBadge: (status) => {
-        const badges = {
-            pending: '<span class="status-badge pending">Processando</span>',
-            completed: '<span class="status-badge completed">Concluído</span>',
-            rejected: '<span class="status-badge rejected">Rejeitado</span>',
-            ativo: '<span class="status-badge pending">Ativo</span>',
-            quitado: '<span class="status-badge completed">Quitado</span>'
-        };
-        return badges[status] || status;
-    },
-    
-    obterTipoPessoa: (tipo) => {
-        const tipos = {
-            fisica: '<span class="status-badge pending">PF</span>',
-            juridica: '<span class="status-badge completed">PJ</span>'
-        };
-        return tipos[tipo] || tipo;
     }
-};
+}
 
-// === GERENCIAMENTO DE TABELAS ===
-class TabelaManager {
-    constructor(containerId, dados, colunas, opcoes = {}) {
-        this.containerId = containerId;
-        this.dados = dados;
-        this.colunas = colunas;
-        this.dadosFiltrados = [...dados];
-        this.paginaAtual = 1;
-        this.itensPorPagina = opcoes.itensPorPagina || 10;
-        this.filtros = {};
-        this.ordenacao = { coluna: null, direcao: 'asc' };
-        
-        this.inicializar();
-    }
-    
-    inicializar() {
-        this.renderizarTabela();
-        this.configurarEventos();
-    }
-    
-    renderizarTabela() {
-        const container = document.getElementById(this.containerId);
-        if (!container) return;
-        
-        const inicio = (this.paginaAtual - 1) * this.itensPorPagina;
-        const fim = inicio + this.itensPorPagina;
-        const dadosPagina = this.dadosFiltrados.slice(inicio, fim);
-        
-        let html = '<table class="table"><thead><tr>';
-        
-        // Cabeçalhos
-        this.colunas.forEach(coluna => {
-            const iconeOrdenacao = this.obterIconeOrdenacao(coluna.campo);
-            html += `<th onclick="window.tabelaManagers['${this.containerId}'].ordenar('${coluna.campo}')" style="cursor: pointer;">
-                ${coluna.titulo} ${iconeOrdenacao}
-            </th>`;
-        });
-        
-        html += '</tr></thead><tbody>';
-        
-        // Dados
-        dadosPagina.forEach(item => {
-            html += '<tr>';
-            this.colunas.forEach(coluna => {
-                let valor = item[coluna.campo];
-                if (coluna.formatador) {
-                    valor = coluna.formatador(valor, item);
-                }
-                html += `<td>${valor}</td>`;
+// Gerenciador de Protestos
+class ProtestosManager {
+    static protestos = [];
+    static paginaAtual = 1;
+    static filtros = { status: '', cliente: '' };
+
+    static async carregarProtestos(pagina = 1) {
+        try {
+            const params = new URLSearchParams({
+                page: pagina,
+                per_page: 10,
+                ...this.filtros
             });
-            html += '</tr>';
-        });
-        
-        html += '</tbody></table>';
-        
-        // Paginação
-        html += this.renderizarPaginacao();
-        
+
+            const response = await ApiClient.get(`/protestos?${params}`);
+            this.protestos = response.data;
+            this.paginaAtual = pagina;
+            this.renderizarTabela();
+            this.atualizarPaginacao(response.pagination);
+        } catch (error) {
+            console.error('Erro ao carregar protestos:', error);
+            showNotification('Erro ao carregar protestos', 'error');
+        }
+    }
+
+    static async criarProtesto(dados) {
+        try {
+            const response = await ApiClient.post('/protestos', dados);
+            showNotification(response.message, 'success');
+            this.carregarProtestos(); // Recarregar lista
+            return response.data;
+        } catch (error) {
+            console.error('Erro ao criar protesto:', error);
+            showNotification(error.message || 'Erro ao criar protesto', 'error');
+            throw error;
+        }
+    }
+
+    static async atualizarStatus(id, novoStatus) {
+        try {
+            const response = await ApiClient.put(`/protestos/${id}`, { status: novoStatus });
+            showNotification(response.message, 'success');
+            this.carregarProtestos(); // Recarregar lista
+        } catch (error) {
+            console.error('Erro ao atualizar status:', error);
+            showNotification(error.message || 'Erro ao atualizar status', 'error');
+        }
+    }
+
+    static renderizarTabela() {
+        const container = document.getElementById('protestos-table-container');
+        if (!container) return;
+
+        const html = `
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th onclick="ProtestosManager.ordenar('protocolo')">Protocolo</th>
+                        <th onclick="ProtestosManager.ordenar('cliente')">Cliente</th>
+                        <th onclick="ProtestosManager.ordenar('documento')">Documento</th>
+                        <th onclick="ProtestosManager.ordenar('valor')">Valor</th>
+                        <th onclick="ProtestosManager.ordenar('status')">Status</th>
+                        <th onclick="ProtestosManager.ordenar('data_vencimento')">Vencimento</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${this.protestos.map(protesto => `
+                        <tr>
+                            <td>${protesto.protocolo}</td>
+                            <td>${protesto.cliente}</td>
+                            <td>${protesto.documento}</td>
+                            <td>${DashboardManager.formatarMoeda(protesto.valor)}</td>
+                            <td><span class="status-badge ${protesto.status}">${this.traduzirStatus(protesto.status)}</span></td>
+                            <td>${this.formatarData(protesto.data_vencimento)}</td>
+                            <td>
+                                <button class="btn btn-primary btn-sm" onclick="ProtestosManager.verDetalhes(${protesto.id})">Ver</button>
+                                ${protesto.status === 'pending' ? 
+                                    `<button class="btn btn-success btn-sm" onclick="ProtestosManager.atualizarStatus(${protesto.id}, 'completed')">Concluir</button>` : 
+                                    ''
+                                }
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+
         container.innerHTML = html;
     }
-    
-    renderizarPaginacao() {
-        const totalPaginas = Math.ceil(this.dadosFiltrados.length / this.itensPorPagina);
-        if (totalPaginas <= 1) return '';
-        
-        let html = '<div class="paginacao" style="margin-top: 1rem; text-align: center;">';
-        
-        // Botão anterior
-        if (this.paginaAtual > 1) {
-            html += `<button class="btn btn-secondary" onclick="window.tabelaManagers['${this.containerId}'].irParaPagina(${this.paginaAtual - 1})">Anterior</button>`;
-        }
-        
-        // Números das páginas
-        for (let i = 1; i <= totalPaginas; i++) {
-            const classe = i === this.paginaAtual ? 'btn-primary' : 'btn-secondary';
-            html += `<button class="btn ${classe}" onclick="window.tabelaManagers['${this.containerId}'].irParaPagina(${i})" style="margin: 0 0.2rem;">${i}</button>`;
-        }
-        
-        // Botão próximo
-        if (this.paginaAtual < totalPaginas) {
-            html += `<button class="btn btn-secondary" onclick="window.tabelaManagers['${this.containerId}'].irParaPagina(${this.paginaAtual + 1})">Próximo</button>`;
-        }
-        
-        html += '</div>';
-        return html;
+
+    static traduzirStatus(status) {
+        const traducoes = {
+            'pending': 'Processando',
+            'completed': 'Concluído',
+            'rejected': 'Rejeitado'
+        };
+        return traducoes[status] || status;
     }
-    
-    obterIconeOrdenacao(campo) {
-        if (this.ordenacao.coluna !== campo) return '↕️';
-        return this.ordenacao.direcao === 'asc' ? '↑' : '↓';
+
+    static formatarData(dataISO) {
+        return new Date(dataISO).toLocaleDateString('pt-BR');
     }
-    
-    ordenar(campo) {
-        if (this.ordenacao.coluna === campo) {
-            this.ordenacao.direcao = this.ordenacao.direcao === 'asc' ? 'desc' : 'asc';
-        } else {
-            this.ordenacao.coluna = campo;
-            this.ordenacao.direcao = 'asc';
+
+    static aplicarFiltros() {
+        const statusFiltro = document.querySelector('#protestos-section select')?.value || '';
+        const clienteFiltro = document.querySelector('#protestos-section input')?.value || '';
+        
+        this.filtros = { status: statusFiltro, cliente: clienteFiltro };
+        this.carregarProtestos(1);
+    }
+
+    static verDetalhes(id) {
+        const protesto = this.protestos.find(p => p.id === id);
+        if (protesto) {
+            alert(`Detalhes do Protesto ${protesto.protocolo}:\n\nCliente: ${protesto.cliente}\nValor: ${DashboardManager.formatarMoeda(protesto.valor)}\nStatus: ${this.traduzirStatus(protesto.status)}\nObservações: ${protesto.observacoes || 'Nenhuma'}`);
         }
-        
-        this.dadosFiltrados.sort((a, b) => {
-            let valorA = a[campo];
-            let valorB = b[campo];
-            
-            // Tratamento especial para números
-            if (typeof valorA === 'number' && typeof valorB === 'number') {
-                return this.ordenacao.direcao === 'asc' ? valorA - valorB : valorB - valorA;
-            }
-            
-            // Tratamento para strings
-            valorA = String(valorA).toLowerCase();
-            valorB = String(valorB).toLowerCase();
-            
-            if (this.ordenacao.direcao === 'asc') {
-                return valorA.localeCompare(valorB);
-            } else {
-                return valorB.localeCompare(valorA);
-            }
-        });
-        
-        this.paginaAtual = 1;
-        this.renderizarTabela();
     }
-    
-    filtrar(filtros) {
-        this.filtros = filtros;
-        this.dadosFiltrados = this.dados.filter(item => {
-            return Object.keys(filtros).every(campo => {
-                if (!filtros[campo]) return true;
-                const valor = String(item[campo]).toLowerCase();
-                const filtro = String(filtros[campo]).toLowerCase();
-                return valor.includes(filtro);
+}
+
+// Gerenciador de Clientes
+class ClientesManager {
+    static clientes = [];
+
+    static async carregarClientes() {
+        try {
+            const response = await ApiClient.get('/clientes');
+            this.clientes = response.data;
+            this.renderizarTabela();
+        } catch (error) {
+            console.error('Erro ao carregar clientes:', error);
+            showNotification('Erro ao carregar clientes', 'error');
+        }
+    }
+
+    static async criarCliente(dados) {
+        try {
+            const response = await ApiClient.post('/clientes', dados);
+            showNotification(response.message, 'success');
+            this.carregarClientes(); // Recarregar lista
+            return response.data;
+        } catch (error) {
+            console.error('Erro ao criar cliente:', error);
+            showNotification(error.message || 'Erro ao criar cliente', 'error');
+            throw error;
+        }
+    }
+
+    static renderizarTabela() {
+        const container = document.getElementById('clientes-table-container');
+        if (!container) return;
+
+        const html = `
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nome/Razão Social</th>
+                        <th>Documento</th>
+                        <th>Tipo</th>
+                        <th>Email</th>
+                        <th>Telefone</th>
+                        <th>Protestos Ativos</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${this.clientes.map(cliente => `
+                        <tr>
+                            <td>${cliente.nome}</td>
+                            <td>${cliente.documento}</td>
+                            <td><span class="badge ${cliente.tipo === 'fisica' ? 'badge-info' : 'badge-warning'}">${cliente.tipo === 'fisica' ? 'PF' : 'PJ'}</span></td>
+                            <td>${cliente.email}</td>
+                            <td>${cliente.telefone}</td>
+                            <td>${cliente.protestos_ativos || 0}</td>
+                            <td>
+                                <button class="btn btn-primary btn-sm" onclick="ClientesManager.verDetalhes(${cliente.id})">Ver</button>
+                                <button class="btn btn-secondary btn-sm" onclick="ClientesManager.editarCliente(${cliente.id})">Editar</button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+
+        container.innerHTML = html;
+    }
+
+    static verDetalhes(id) {
+        const cliente = this.clientes.find(c => c.id === id);
+        if (cliente) {
+            alert(`Detalhes do Cliente:\n\nNome: ${cliente.nome}\nDocumento: ${cliente.documento}\nEmail: ${cliente.email}\nTelefone: ${cliente.telefone}\nEndereço: ${cliente.endereco || 'Não informado'}`);
+        }
+    }
+
+    static editarCliente(id) {
+        // Implementar edição de cliente
+        showNotification('Funcionalidade de edição em desenvolvimento', 'info');
+    }
+}
+
+// Gerenciador de Certidões
+class CertidoesManager {
+    static certidoes = [];
+
+    static async carregarCertidoes() {
+        try {
+            const response = await ApiClient.get('/certidoes');
+            this.certidoes = response.data;
+            this.renderizarTabela();
+        } catch (error) {
+            console.error('Erro ao carregar certidões:', error);
+            showNotification('Erro ao carregar certidões', 'error');
+        }
+    }
+
+    static async criarCertidao(dados) {
+        try {
+            const response = await ApiClient.post('/certidoes', dados);
+            showNotification(response.message, 'success');
+            this.carregarCertidoes(); // Recarregar lista
+            return response.data;
+        } catch (error) {
+            console.error('Erro ao criar certidão:', error);
+            showNotification(error.message || 'Erro ao criar certidão', 'error');
+            throw error;
+        }
+    }
+
+    static async downloadCertidao(id) {
+        try {
+            const response = await ApiClient.get(`/certidoes/${id}/download`);
+            showNotification(response.message, 'success');
+        } catch (error) {
+            console.error('Erro ao fazer download:', error);
+            showNotification(error.message || 'Erro ao fazer download da certidão', 'error');
+        }
+    }
+
+    static async enviarEmail(id) {
+        try {
+            const response = await ApiClient.post(`/certidoes/${id}/enviar-email`);
+            showNotification(response.message, 'success');
+        } catch (error) {
+            console.error('Erro ao enviar email:', error);
+            showNotification(error.message || 'Erro ao enviar certidão por email', 'error');
+        }
+    }
+
+    static renderizarTabela() {
+        const container = document.getElementById('certidoes-table-container');
+        if (!container) return;
+
+        const html = `
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Protocolo</th>
+                        <th>Cliente/CPF/CNPJ</th>
+                        <th>Tipo</th>
+                        <th>Status</th>
+                        <th>Data Solicitação</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${this.certidoes.map(certidao => `
+                        <tr>
+                            <td>${certidao.protocolo}</td>
+                            <td>${certidao.nome_requerente} / ${certidao.documento_requerente}</td>
+                            <td><span class="badge badge-info">${certidao.tipo.charAt(0).toUpperCase() + certidao.tipo.slice(1)}</span></td>
+                            <td><span class="status-badge ${certidao.status}">${ProtestosManager.traduzirStatus(certidao.status)}</span></td>
+                            <td>${ProtestosManager.formatarData(certidao.data_solicitacao)}</td>
+                            <td>
+                                ${certidao.status === 'completed' ? 
+                                    `<button class="btn btn-success btn-sm" onclick="CertidoesManager.downloadCertidao(${certidao.id})">Download</button>
+                                     <button class="btn btn-secondary btn-sm" onclick="CertidoesManager.enviarEmail(${certidao.id})">Enviar</button>` :
+                                    `<button class="btn btn-warning btn-sm" onclick="CertidoesManager.consultarStatus(${certidao.id})">Status</button>`
+                                }
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+
+        container.innerHTML = html;
+    }
+
+    static consultarStatus(id) {
+        const certidao = this.certidoes.find(c => c.id === id);
+        if (certidao) {
+            alert(`Status da Certidão ${certidao.protocolo}:\n\n${ProtestosManager.traduzirStatus(certidao.status)}\n\nFinalidade: ${certidao.finalidade}`);
+        }
+    }
+}
+
+// Gerenciador de Pesquisa
+class PesquisaManager {
+    static async pesquisarProtestos(tipo, valor) {
+        try {
+            showNotification('Realizando pesquisa nos cartórios...', 'info');
+            
+            const response = await ApiClient.post('/pesquisa/protestos', {
+                tipo: tipo,
+                valor: valor
             });
-        });
-        
-        this.paginaAtual = 1;
-        this.renderizarTabela();
-    }
-    
-    irParaPagina(pagina) {
-        this.paginaAtual = pagina;
-        this.renderizarTabela();
-    }
-    
-    configurarEventos() {
-        // Eventos específicos podem ser adicionados aqui
-    }
-}
 
-// === INICIALIZAÇÃO DAS TABELAS ===
-const tabelaManagers = {};
-
-function inicializarTabelaProtestos() {
-    const colunas = [
-        { campo: 'protocolo', titulo: 'ID' },
-        { campo: 'cliente', titulo: 'Cliente' },
-        { campo: 'documento', titulo: 'Documento' },
-        { 
-            campo: 'valor', 
-            titulo: 'Valor',
-            formatador: (valor) => utils.formatarMoeda(valor)
-        },
-        { 
-            campo: 'status', 
-            titulo: 'Status',
-            formatador: (valor) => utils.obterStatusBadge(valor)
-        },
-        { 
-            campo: 'dataCriacao', 
-            titulo: 'Data Criação',
-            formatador: (valor) => utils.formatarData(valor)
-        },
-        { 
-            campo: 'dataVencimento', 
-            titulo: 'Vencimento',
-            formatador: (valor) => utils.formatarData(valor)
-        },
-        { 
-            campo: 'id', 
-            titulo: 'Ações',
-            formatador: (valor, item) => `
-                <button class="btn btn-secondary" onclick="verDetalhes(${valor})">Ver</button>
-                <button class="btn btn-warning" onclick="editarProtesto(${valor})">Editar</button>
-                ${item.status === 'pending' ? `<button class="btn btn-danger" onclick="cancelarProtesto(${valor})">Cancelar</button>` : ''}
-            `
+            this.exibirResultados(response.data);
+            return response.data;
+        } catch (error) {
+            console.error('Erro na pesquisa:', error);
+            showNotification(error.message || 'Erro ao realizar pesquisa', 'error');
+            throw error;
         }
-    ];
-    
-    tabelaManagers['protestos-table-body'] = new TabelaManager(
-        'protestos-table-container',
-        dadosSimulados.protestos,
-        colunas,
-        { itensPorPagina: 5 }
-    );
-}
-
-function inicializarTabelaClientes() {
-    const colunas = [
-        { campo: 'nome', titulo: 'Nome' },
-        { 
-            campo: 'tipo', 
-            titulo: 'Tipo',
-            formatador: (valor) => utils.obterTipoPessoa(valor)
-        },
-        { campo: 'documento', titulo: 'CNPJ/CPF' },
-        { campo: 'email', titulo: 'Email' },
-        { campo: 'telefone', titulo: 'Telefone' },
-        { 
-            campo: 'protestosAtivos', 
-            titulo: 'Protestos',
-            formatador: (valor) => `${valor} ativos`
-        },
-        { 
-            campo: 'id', 
-            titulo: 'Ações',
-            formatador: (valor) => `
-                <button class="btn btn-secondary" onclick="verCliente(${valor})">Ver</button>
-                <button class="btn btn-warning" onclick="editarCliente(${valor})">Editar</button>
-            `
-        }
-    ];
-    
-    tabelaManagers['clientes-table-body'] = new TabelaManager(
-        'clientes-table-container',
-        dadosSimulados.clientes,
-        colunas,
-        { itensPorPagina: 5 }
-    );
-}
-
-function inicializarTabelaCertidoes() {
-    const colunas = [
-        { campo: 'protocolo', titulo: 'Protocolo' },
-        { 
-            campo: 'cliente', 
-            titulo: 'Cliente/CPF/CNPJ',
-            formatador: (valor, item) => `${valor} / ${item.documento}`
-        },
-        { 
-            campo: 'tipo', 
-            titulo: 'Tipo',
-            formatador: (valor) => valor.charAt(0).toUpperCase() + valor.slice(1)
-        },
-        { 
-            campo: 'status', 
-            titulo: 'Status',
-            formatador: (valor) => utils.obterStatusBadge(valor)
-        },
-        { 
-            campo: 'dataSolicitacao', 
-            titulo: 'Data Solicitação',
-            formatador: (valor) => utils.formatarData(valor)
-        },
-        { 
-            campo: 'id', 
-            titulo: 'Ações',
-            formatador: (valor, item) => {
-                if (item.status === 'completed') {
-                    return `
-                        <button class="btn btn-success" onclick="downloadCertidao(${valor})">Download</button>
-                        <button class="btn btn-secondary" onclick="enviarEmail(${valor})">Enviar</button>
-                    `;
-                } else {
-                    return `
-                        <button class="btn btn-warning" onclick="consultarStatus(${valor})">Status</button>
-                        <button class="btn btn-secondary" onclick="editarSolicitacao(${valor})">Editar</button>
-                    `;
-                }
-            }
-        }
-    ];
-    
-    tabelaManagers['certidoes-table-body'] = new TabelaManager(
-        'certidoes-table-container',
-        dadosSimulados.certidoes,
-        colunas,
-        { itensPorPagina: 5 }
-    );
-}
-
-// === FUNCIONALIDADES DE BUSCA E FILTRO ===
-function configurarFiltros() {
-    // Filtro de protestos
-    const searchProtestos = document.getElementById('searchAllProtestos');
-    const filterStatus = document.getElementById('filterStatusAll');
-    
-    if (searchProtestos && filterStatus) {
-        const aplicarFiltroProtestos = () => {
-            const filtros = {};
-            if (searchProtestos.value) {
-                filtros.cliente = searchProtestos.value;
-            }
-            if (filterStatus.value) {
-                filtros.status = filterStatus.value;
-            }
-            
-            if (tabelaManagers['protestos-table-container']) {
-                tabelaManagers['protestos-table-container'].filtrar(filtros);
-            }
-        };
-        
-        searchProtestos.addEventListener('input', aplicarFiltroProtestos);
-        filterStatus.addEventListener('change', aplicarFiltroProtestos);
     }
-    
-    // Filtro de clientes
-    const searchClientes = document.getElementById('searchClientes');
-    const filterTipoCliente = document.getElementById('filterTipoCliente');
-    
-    if (searchClientes && filterTipoCliente) {
-        const aplicarFiltroClientes = () => {
-            const filtros = {};
-            if (searchClientes.value) {
-                filtros.nome = searchClientes.value;
-            }
-            if (filterTipoCliente.value) {
-                filtros.tipo = filterTipoCliente.value;
-            }
-            
-            if (tabelaManagers['clientes-table-container']) {
-                tabelaManagers['clientes-table-container'].filtrar(filtros);
-            }
-        };
-        
-        searchClientes.addEventListener('input', aplicarFiltroClientes);
-        filterTipoCliente.addEventListener('change', aplicarFiltroClientes);
-    }
-}
 
-// === SIMULAÇÃO DE PESQUISA ===
-function simularPesquisaProtesto(tipo, valor) {
-    // Simula uma pesquisa de protesto
-    const loading = document.getElementById('loadingPesquisa');
-    const resultado = document.getElementById('resultadoPesquisa');
-    const dadosConsultado = document.getElementById('dadosConsultado');
-    const resultadosBody = document.getElementById('resultados-table-body');
-    
-    if (loading) loading.style.display = 'block';
-    
-    setTimeout(() => {
-        if (loading) loading.style.display = 'none';
-        if (resultado) resultado.style.display = 'block';
+    static exibirResultados(dados) {
+        const container = document.getElementById('resultados-pesquisa');
+        if (!container) return;
+
+        const { consulta, protestos } = dados;
         
-        // Dados do consultado
-        if (dadosConsultado) {
-            dadosConsultado.innerHTML = `
-                <h4 style="color: var(--primary-color); margin-bottom: 1rem;">Dados do Consultado</h4>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                    <div><strong>Tipo:</strong> ${tipo.toUpperCase()}</div>
-                    <div><strong>Documento/Nome:</strong> ${valor}</div>
-                    <div><strong>Data da Consulta:</strong> ${new Date().toLocaleString('pt-BR')}</div>
-                    <div><strong>Protestos Encontrados:</strong> 2</div>
+        let html = `
+            <div class="pesquisa-info">
+                <h4>Resultado da Consulta</h4>
+                <p><strong>Tipo:</strong> ${consulta.tipo.toUpperCase()}</p>
+                <p><strong>Valor consultado:</strong> ${consulta.valor}</p>
+                <p><strong>Data:</strong> ${ProtestosManager.formatarData(consulta.data_consulta)}</p>
+                <p><strong>Protestos encontrados:</strong> ${consulta.total_encontrados}</p>
+            </div>
+        `;
+
+        if (protestos.length > 0) {
+            html += `
+                <div class="resultados-lista">
+                    <h5>Protestos Encontrados:</h5>
+                    ${protestos.map(protesto => `
+                        <div class="protesto-item">
+                            <div class="protesto-header">
+                                <strong>${protesto.protocolo}</strong> - ${protesto.cartorio}
+                            </div>
+                            <div class="protesto-details">
+                                <p><strong>Valor:</strong> ${DashboardManager.formatarMoeda(protesto.valor)}</p>
+                                <p><strong>Data:</strong> ${protesto.data_protesto}</p>
+                                <p><strong>Status:</strong> ${protesto.status}</p>
+                                <p><strong>Documento:</strong> ${protesto.documento_origem}</p>
+                                <p><strong>Apresentante:</strong> ${protesto.apresentante}</p>
+                            </div>
+                        </div>
+                    `).join('')}
                 </div>
             `;
+        } else {
+            html += '<div class="no-results"><p>Nenhum protesto encontrado para os dados informados.</p></div>';
         }
-        
-        // Resultados simulados
-        if (resultadosBody) {
-            resultadosBody.innerHTML = `
-                <tr>
-                    <td>#P001</td>
-                    <td>1º Cartório de Protestos de São Paulo</td>
-                    <td>R$ 5.500,00</td>
-                    <td>15/06/2025</td>
-                    <td><span class="status-badge pending">Ativo</span></td>
-                    <td>
-                        <button class="btn btn-secondary" onclick="verDetalheProtesto('P001')">Detalhes</button>
-                        <button class="btn btn-warning" onclick="solicitarCancelamento('P001')">Cancelar</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>#P002</td>
-                    <td>2º Cartório de Protestos de São Paulo</td>
-                    <td>R$ 3.200,00</td>
-                    <td>20/05/2025</td>
-                    <td><span class="status-badge completed">Quitado</span></td>
-                    <td>
-                        <button class="btn btn-secondary" onclick="verDetalheProtesto('P002')">Detalhes</button>
-                        <button class="btn btn-success" onclick="downloadComprovante('P002')">Comprovante</button>
-                    </td>
-                </tr>
-            `;
-        }
-        
-        showNotification('Pesquisa realizada com sucesso!', 'success');
-    }, 2000);
+
+        container.innerHTML = html;
+        container.style.display = 'block';
+    }
 }
 
-// === ATUALIZAÇÃO DE ESTATÍSTICAS ===
-function atualizarEstatisticas() {
-    // Atualiza as estatísticas do dashboard com dados simulados
-    const stats = {
-        totalProtestos: dadosSimulados.protestos.length,
-        protestosAtivos: dadosSimulados.protestos.filter(p => p.status === 'pending').length,
-        valorCobranca: dadosSimulados.protestos.reduce((total, p) => total + p.valor, 0),
-        taxaSucesso: Math.round((dadosSimulados.protestos.filter(p => p.status === 'completed').length / dadosSimulados.protestos.length) * 100)
-    };
-    
-    const elementos = {
-        totalProtestos: document.getElementById('totalProtestos'),
-        protestosAtivos: document.getElementById('protestosAtivos'),
-        valorCobranca: document.getElementById('valorCobranca'),
-        taxaSucesso: document.getElementById('taxaSucesso')
-    };
-    
-    if (elementos.totalProtestos) elementos.totalProtestos.textContent = stats.totalProtestos;
-    if (elementos.protestosAtivos) elementos.protestosAtivos.textContent = stats.protestosAtivos;
-    if (elementos.valorCobranca) elementos.valorCobranca.textContent = utils.formatarMoeda(stats.valorCobranca);
-    if (elementos.taxaSucesso) elementos.taxaSucesso.textContent = `${stats.taxaSucesso}%`;
-}
-
-// === FUNÇÕES DE AÇÃO ===
-window.verDetalhes = (id) => {
-    const protesto = dadosSimulados.protestos.find(p => p.id === id);
-    if (protesto) {
-        showNotification(`Visualizando detalhes do protesto ${protesto.protocolo}`, 'success');
-        console.log('Detalhes do protesto:', protesto);
-    }
-};
-
-window.editarProtesto = (id) => {
-    showNotification(`Editando protesto ID: ${id}`, 'warning');
-};
-
-window.cancelarProtesto = (id) => {
-    if (confirm('Tem certeza que deseja cancelar este protesto?')) {
-        showNotification(`Protesto ID: ${id} cancelado`, 'success');
-    }
-};
-
-window.verCliente = (id) => {
-    const cliente = dadosSimulados.clientes.find(c => c.id === id);
-    if (cliente) {
-        showNotification(`Visualizando cliente: ${cliente.nome}`, 'success');
-        console.log('Detalhes do cliente:', cliente);
-    }
-};
-
-window.editarCliente = (id) => {
-    showNotification(`Editando cliente ID: ${id}`, 'warning');
-};
-
-window.downloadCertidao = (id) => {
-    showNotification(`Download da certidão ID: ${id} iniciado`, 'success');
-};
-
-window.enviarEmail = (id) => {
-    showNotification(`Email da certidão ID: ${id} enviado`, 'success');
-};
-
-window.consultarStatus = (id) => {
-    showNotification(`Consultando status da certidão ID: ${id}`, 'warning');
-};
-
-window.editarSolicitacao = (id) => {
-    showNotification(`Editando solicitação ID: ${id}`, 'warning');
-};
-
-window.filtrarProtestos = () => {
-    showNotification('Filtros aplicados com sucesso!', 'success');
-};
-
-window.gerarRelatorioRapido = (tipo = 'geral') => {
-    showNotification(`Gerando relatório ${tipo}...`, 'success');
-};
-
-window.exportarDados = (tipo = 'completo') => {
-    showNotification(`Exportando dados: ${tipo}`, 'success');
-};
-
-// === INICIALIZAÇÃO ===
+// Inicialização quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', function() {
-    // Aguarda um pouco para garantir que todos os elementos estejam carregados
-    setTimeout(() => {
-        // Expor tabelaManagers globalmente
-        window.tabelaManagers = tabelaManagers;
-        
-        // Inicializar tabelas
-        inicializarTabelaProtestos();
-        inicializarTabelaClientes();
-        inicializarTabelaCertidoes();
-        
-        // Configurar filtros
-        configurarFiltros();
-        
-        // Atualizar estatísticas
-        atualizarEstatisticas();
-        
-        // Configurar formulário de pesquisa
-        const pesquisaForm = document.getElementById('pesquisaForm');
-        if (pesquisaForm) {
-            pesquisaForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const formData = new FormData(e.target);
-                const tipo = formData.get('tipoConsulta');
-                const valor = formData.get('valorConsulta');
-                
-                if (tipo && valor) {
-                    simularPesquisaProtesto(tipo, valor);
-                }
-            });
-        }
-        
-        console.log('ProtestoPro: Sistema inicializado com sucesso!');
-    }, 500);
+    // Carregar dados iniciais
+    DashboardManager.carregarEstatisticas();
+    ProtestosManager.carregarProtestos();
+    ClientesManager.carregarClientes();
+    CertidoesManager.carregarCertidoes();
+
+    // Configurar eventos de filtro
+    const filtroProtestos = document.querySelector('#protestos-section .btn');
+    if (filtroProtestos) {
+        filtroProtestos.addEventListener('click', () => {
+            ProtestosManager.aplicarFiltros();
+        });
+    }
+
+    // Configurar formulários para usar APIs reais
+    configurarFormularios();
 });
+
+// Configuração dos formulários
+function configurarFormularios() {
+    // Formulário de Protesto
+    const protestoForm = document.getElementById('protestoForm');
+    if (protestoForm) {
+        protestoForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(protestoForm);
+            const dados = {
+                cliente_id: parseInt(formData.get('cliente')),
+                tipo_documento: formData.get('tipoDocumento'),
+                numero_documento: formData.get('numeroDocumento'),
+                valor: parseFloat(formData.get('valor')),
+                data_vencimento: formData.get('dataVencimento'),
+                endereco_devedor: formData.get('enderecoDevedor'),
+                observacoes: formData.get('observacoes'),
+                urgente: formData.has('urgente')
+            };
+
+            try {
+                await ProtestosManager.criarProtesto(dados);
+                closeModal('novoProtestoModal');
+                protestoForm.reset();
+            } catch (error) {
+                // Erro já tratado no ProtestosManager
+            }
+        });
+    }
+
+    // Formulário de Cliente
+    const clienteForm = document.getElementById('clienteForm');
+    if (clienteForm) {
+        clienteForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(clienteForm);
+            const dados = {
+                nome: formData.get('nome'),
+                tipo: formData.get('tipoPessoa'),
+                documento: formData.get('documento'),
+                email: formData.get('email'),
+                telefone: formData.get('telefone'),
+                endereco: formData.get('endereco'),
+                cep: formData.get('cep'),
+                cidade: formData.get('cidade'),
+                estado: formData.get('estado'),
+                bairro: formData.get('bairro'),
+                nome_fantasia: formData.get('nomeFantasia'),
+                inscricao_estadual: formData.get('inscricaoEstadual'),
+                representante_legal: formData.get('representanteLegal'),
+                observacoes: formData.get('observacoes')
+            };
+
+            try {
+                await ClientesManager.criarCliente(dados);
+                closeModal('clienteModal');
+                clienteForm.reset();
+            } catch (error) {
+                // Erro já tratado no ClientesManager
+            }
+        });
+    }
+
+    // Formulário de Certidão
+    const certidaoForm = document.getElementById('certidaoForm');
+    if (certidaoForm) {
+        certidaoForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(certidaoForm);
+            const dados = {
+                tipo: formData.get('tipoCertidao'),
+                nome_requerente: formData.get('nomeRequerente'),
+                documento_requerente: formData.get('documentoRequerente'),
+                tipo_pessoa: formData.get('tipoPessoaCertidao'),
+                finalidade: formData.get('finalidade'),
+                observacoes: formData.get('observacoesCertidao'),
+                urgente: formData.has('urgenteCertidao'),
+                enviar_email: formData.has('enviarEmail')
+            };
+
+            try {
+                await CertidoesManager.criarCertidao(dados);
+                closeModal('certidaoModal');
+                certidaoForm.reset();
+            } catch (error) {
+                // Erro já tratado no CertidoesManager
+            }
+        });
+    }
+
+    // Formulário de Pesquisa
+    const pesquisaForm = document.getElementById('pesquisaForm');
+    if (pesquisaForm) {
+        pesquisaForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(pesquisaForm);
+            const tipo = formData.get('tipoConsulta');
+            const valor = formData.get('valorConsulta');
+
+            try {
+                await PesquisaManager.pesquisarProtestos(tipo, valor);
+            } catch (error) {
+                // Erro já tratado no PesquisaManager
+            }
+        });
+    }
+}
+
+// Função global para notificações (mantida para compatibilidade)
+function showNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type} show`;
+    notification.innerHTML = `
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()" style="background: none; border: none; color: white; margin-left: 10px; cursor: pointer;">&times;</button>
+    `;
+    
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
+}
 

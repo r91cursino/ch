@@ -892,7 +892,7 @@
                 <!-- Stats Cards -->
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <h3 id="totalProtestos">156</h3>
+                        <h3 id="totalProtestos" data-stat="total-protestos">5</h3>
                         <p>Total de Protestos</p>
                         <span class="trend up">↗ +12% este mês</span>
                         <div class="progress-bar">
@@ -900,7 +900,7 @@
                         </div>
                     </div>
                     <div class="stat-card">
-                        <h3 id="protestosAtivos">89</h3>
+                        <h3 id="protestosAtivos" data-stat="protestos-ativos">2</h3>
                         <p>Protestos Ativos</p>
                         <span class="trend up">↗ +8% esta semana</span>
                         <div class="progress-bar">
@@ -908,7 +908,7 @@
                         </div>
                     </div>
                     <div class="stat-card">
-                        <h3 id="valorCobranca">R$ 245.800</h3>
+                        <h3 id="valorCobranca" data-stat="valor-cobranca">R$ 28.300,00</h3>
                         <p>Valor em Cobrança</p>
                         <span class="trend down">↘ -3% este mês</span>
                         <div class="progress-bar">
@@ -916,7 +916,7 @@
                         </div>
                     </div>
                     <div class="stat-card">
-                        <h3 id="taxaSucesso">92%</h3>
+                        <h3 id="taxaSucesso" data-stat="taxa-sucesso">40%</h3>
                         <p>Taxa de Sucesso</p>
                         <span class="trend up">↗ +5% este mês</span>
                         <div class="progress-bar">
@@ -1499,6 +1499,11 @@
                             </div>
                         </form>
                     </div>
+                </div>
+
+                <!-- Container para resultados da pesquisa -->
+                <div id="resultados-pesquisa" style="display: none; margin-top: 2rem;">
+                    <!-- Resultados serão inseridos aqui pelo JavaScript -->
                 </div>
 
                 <div id="resultadoPesquisa" class="card" style="display: none; margin-top: 2rem;">
