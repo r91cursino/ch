@@ -1078,50 +1078,8 @@
                     </button>
                 </div>
 
-                <div class="table-container">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Cliente</th>
-                                <th>Documento</th>
-                                <th>Valor</th>
-                                <th>Status</th>
-                                <th>Data Criação</th>
-                                <th>Vencimento</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="protestos-table-body">
-                            <tr>
-                                <td>#001</td>
-                                <td>João Silva & Cia</td>
-                                <td>Duplicata 1234</td>
-                                <td>R$ 15.500,00</td>
-                                <td><span class="status-badge pending">Processando</span></td>
-                                <td>15/07/2025</td>
-                                <td>25/07/2025</td>
-                                <td>
-                                    <button class="btn btn-secondary" onclick="verDetalhes(1)">Ver</button>
-                                    <button class="btn btn-warning" onclick="editarProtesto(1)">Editar</button>
-                                    <button class="btn btn-danger" onclick="cancelarProtesto(1)">Cancelar</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>#002</td>
-                                <td>Maria Santos LTDA</td>
-                                <td>Nota Promissória 5678</td>
-                                <td>R$ 8.200,00</td>
-                                <td><span class="status-badge completed">Concluído</span></td>
-                                <td>14/07/2025</td>
-                                <td>20/07/2025</td>
-                                <td>
-                                    <button class="btn btn-secondary" onclick="verDetalhes(2)">Ver</button>
-                                    <button class="btn btn-success" onclick="downloadDocumento(2)">Download</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div id="protestos-table-container" class="table-container">
+                    <!-- Tabela será gerada dinamicamente pelo JavaScript -->
                 </div>
             </div>
 
@@ -1162,46 +1120,8 @@
                     </div>
                 </div>
 
-                <div class="table-container">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>Tipo</th>
-                                <th>CNPJ/CPF</th>
-                                <th>Email</th>
-                                <th>Telefone</th>
-                                <th>Protestos</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="clientes-table-body">
-                            <tr>
-                                <td>João Silva & Cia</td>
-                                <td><span class="status-badge completed">PJ</span></td>
-                                <td>12.345.678/0001-90</td>
-                                <td>contato@joaosilva.com</td>
-                                <td>(11) 99999-9999</td>
-                                <td>3 ativos</td>
-                                <td>
-                                    <button class="btn btn-secondary" onclick="verCliente(1)">Ver</button>
-                                    <button class="btn btn-warning" onclick="editarCliente(1)">Editar</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Maria Santos</td>
-                                <td><span class="status-badge pending">PF</span></td>
-                                <td>123.456.789-00</td>
-                                <td>maria@email.com</td>
-                                <td>(11) 88888-8888</td>
-                                <td>1 ativo</td>
-                                <td>
-                                    <button class="btn btn-secondary" onclick="verCliente(2)">Ver</button>
-                                    <button class="btn btn-warning" onclick="editarCliente(2)">Editar</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div id="clientes-table-container" class="table-container">
+                    <!-- Tabela será gerada dinamicamente pelo JavaScript -->
                 </div>
             </div>
 
@@ -1510,43 +1430,8 @@
                             <h3>Certidões Recentes</h3>
                         </div>
                         <div class="card-body">
-                            <div class="table-container">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Protocolo</th>
-                                            <th>Cliente/CPF/CNPJ</th>
-                                            <th>Tipo</th>
-                                            <th>Status</th>
-                                            <th>Data Solicitação</th>
-                                            <th>Ações</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="certidoes-table-body">
-                                        <tr>
-                                            <td>#CERT001</td>
-                                            <td>João Silva / 123.456.789-00</td>
-                                            <td>Positiva</td>
-                                            <td><span class="status-badge completed">Emitida</span></td>
-                                            <td>20/07/2025</td>
-                                            <td>
-                                                <button class="btn btn-success" onclick="downloadCertidao(1)">Download</button>
-                                                <button class="btn btn-secondary" onclick="enviarEmail(1)">Enviar</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>#CERT002</td>
-                                            <td>Maria Santos LTDA / 12.345.678/0001-90</td>
-                                            <td>Negativa</td>
-                                            <td><span class="status-badge pending">Processando</span></td>
-                                            <td>21/07/2025</td>
-                                            <td>
-                                                <button class="btn btn-warning" onclick="consultarStatus(2)">Status</button>
-                                                <button class="btn btn-secondary" onclick="editarSolicitacao(2)">Editar</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <div id="certidoes-table-container" class="table-container">
+                                <!-- Tabela será gerada dinamicamente pelo JavaScript -->
                             </div>
                         </div>
                     </div>
@@ -2229,8 +2114,19 @@
                     
                     <div class="form-group">
                         <label>Descrição</label>
-                        <textarea name="descricaoDocumento" rows="3" placeholder="Descreva o documento...
+                        <textarea name="descricaoDocumento" rows="3" placeholder="Descreva o documento..."></textarea>
+                    </div>
+                    
+                    <div style="text-align: right; margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('uploadDocumentoModal')">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Upload Documento</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
+    <script src="app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const navLinks = document.querySelectorAll('.nav-link');
