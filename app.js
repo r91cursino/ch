@@ -601,3 +601,25 @@ function showNotification(message, type = 'success') {
     }, 5000);
 }
 
+
+
+// Função para toggle do FAQ
+function toggleFaq(element) {
+    const faqItem = element.parentElement;
+    const isActive = faqItem.classList.contains('active');
+    
+    // Fecha todos os outros FAQs
+    document.querySelectorAll('.faq-item.active').forEach(item => {
+        if (item !== faqItem) {
+            item.classList.remove('active');
+        }
+    });
+    
+    // Toggle do FAQ atual
+    if (isActive) {
+        faqItem.classList.remove('active');
+    } else {
+        faqItem.classList.add('active');
+    }
+}
+

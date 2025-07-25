@@ -1059,6 +1059,268 @@
                 max-height: 500px;
             }
         }
+
+        /* Pricing Section Styles */
+        #pricing-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 4rem 2rem;
+        }
+
+        .pricing-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .pricing-header {
+            margin-bottom: 3rem;
+        }
+
+        .pricing-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .pricing-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin: 3rem auto;
+            max-width: 600px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .pricing-main {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .price-badge {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .price-value {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .price-description {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .pricing-features {
+            margin: 2rem 0;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .feature-item:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .feature-text {
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .pricing-cta {
+            margin-top: 2rem;
+        }
+
+        .pricing-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* FAQ Section Styles */
+        #faq-section {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            padding: 4rem 2rem;
+        }
+
+        .faq-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .faq-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .faq-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .faq-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .faq-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .faq-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .faq-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .faq-question span:first-child {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .faq-icon {
+            font-size: 1.5rem;
+            font-weight: 300;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 0 1.5rem 1.5rem;
+            max-height: 200px;
+            opacity: 1;
+        }
+
+        .faq-answer {
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .pricing-title, .faq-title {
+                font-size: 2rem;
+            }
+
+            .price-value {
+                font-size: 2.5rem;
+            }
+
+            .pricing-card {
+                padding: 2rem;
+                margin: 2rem auto;
+            }
+
+            .pricing-stats {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1464,6 +1726,148 @@
                                         <span>Gerente de E-commerce</span>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção de Preços -->
+            <div id="pricing-section" class="section">
+                <div class="pricing-container">
+                    <div class="pricing-header">
+                        <div class="pricing-badge">
+                            <span>💰 Preços</span>
+                        </div>
+                        <h2>Preços Transparentes</h2>
+                        <p>Modelo de negócio claro e sem surpresas. Pague apenas pelo que usar.</p>
+                    </div>
+                    
+                    <div class="pricing-card">
+                        <div class="pricing-main">
+                            <div class="price-badge">APENAS</div>
+                            <div class="price-value">R$ 21,90</div>
+                            <div class="price-description">
+                                para enviar um título. Será cobrada uma taxa de <strong>5%</strong> sobre o valor da dívida, caso o título seja pago pelo devedor.
+                            </div>
+                        </div>
+                        
+                        <div class="pricing-features">
+                            <div class="feature-item">
+                                <span class="feature-icon">✅</span>
+                                <span class="feature-text">Envio automático ao cartório</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">✅</span>
+                                <span class="feature-text">Acompanhamento em tempo real</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">✅</span>
+                                <span class="feature-text">Carta de anuência digital</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">✅</span>
+                                <span class="feature-text">Cancelamento com um clique</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">✅</span>
+                                <span class="feature-text">Suporte especializado</span>
+                            </div>
+                        </div>
+                        
+                        <div class="pricing-cta">
+                            <button class="btn btn-primary" onclick="openModal('novoProtestoModal')">
+                                Protestar Agora
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="pricing-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">60%</div>
+                            <div class="stat-label">dos devedores pagam em cartório</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">6.200+</div>
+                            <div class="stat-label">clientes cadastrados</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">R$ 83M</div>
+                            <div class="stat-label">em valores recuperados</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção de FAQ -->
+            <div id="faq-section" class="section">
+                <div class="faq-container">
+                    <div class="faq-header">
+                        <div class="faq-badge">
+                            <span>❓ Dúvidas Frequentes</span>
+                        </div>
+                        <h2>Perguntas e Respostas</h2>
+                        <p>Esclarecemos as principais dúvidas sobre nosso serviço</p>
+                    </div>
+                    
+                    <div class="faq-grid">
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>Por que tenho que pagar R$ 21,90 para enviar o título?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                É uma taxa de conveniência cobrada pelo ProtestoPro para manter a plataforma, encaminhar o título para o cartório, acompanhar o processo, encaminhar o pedido de cancelamento, quando for o caso, assim como a autorização de cancelamento (carta de anuência).
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>Precisarei desembolsar mais algum valor?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                Será cobrada uma comissão de 5% sobre o valor recebido, caso o título seja pago pelo devedor. Para títulos protestados, caso queira realizar o cancelamento do protesto sem utilizar a carta de anuência, será necessário pagar as despesas do cartório.
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>Como saberei o valor que terei de pagar para o cartório no cancelamento?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                Você deve realizar a solicitação de cancelamento na plataforma. Nossa equipe entrará em contato com o cartório para pesquisar o valor dos emolumentos cartorários e prazo para realizar o pedido junto ao cartório. Em seguida você será comunicado sobre o valor e como proceder com o pagamento.
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>Quero iniciar agora, o que eu preciso providenciar?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                Para iniciar a cobrança é necessário que você tenha o documento comprobatório da dívida e o certificado digital do credor ou de seu procurador. Com o título em mãos e o certificado instalado em seu computador, cadastre-se na plataforma, digite os dados do título para realizar o envio, e deixe nossa equipe cuidar de tudo para você!
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>Qual a taxa de sucesso do protesto?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                Estatisticamente, 60% dos devedores pagam em cartório se a dívida for cobrada logo após o vencimento. O protesto é regulamentado por lei e é uma das formas mais eficazes de cobrança.
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>Como funciona o cancelamento do protesto?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                Oferecemos duas opções: cancelamento automático através da carta de anuência digital (sem custos adicionais) ou cancelamento tradicional via cartório (com custos que variam por estado). O processo pode ser iniciado com apenas um clique na plataforma.
                             </div>
                         </div>
                     </div>
