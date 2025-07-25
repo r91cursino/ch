@@ -871,6 +871,194 @@
                 padding: 1rem;
             }
         }
+
+        /* Estilos para Seção de Depoimentos */
+        #testimonials-section {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+            padding: 4rem 0;
+            margin: 2rem 0;
+        }
+
+        .testimonials-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .testimonials-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .testimonials-badge {
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .testimonials-badge span {
+            background: white;
+            border: 1px solid var(--primary-color);
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .testimonials-header h2 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .testimonials-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            max-height: 600px;
+            overflow: hidden;
+            mask-image: linear-gradient(to bottom, transparent, black 25%, black 75%, transparent);
+        }
+
+        .testimonials-column {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            animation: scrollUp 20s linear infinite;
+        }
+
+        .testimonials-column-md {
+            display: none;
+            animation: scrollUp 25s linear infinite;
+        }
+
+        .testimonials-column-lg {
+            display: none;
+            animation: scrollUp 18s linear infinite;
+        }
+
+        @keyframes scrollUp {
+            0% {
+                transform: translateY(100%);
+            }
+            100% {
+                transform: translateY(-100%);
+            }
+        }
+
+        .testimonial-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(74, 144, 226, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-height: 180px;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .testimonial-content {
+            margin-bottom: 1.5rem;
+        }
+
+        .testimonial-content p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-color);
+            margin: 0;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
+        }
+
+        .author-info h4 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .author-info span {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Responsividade para Depoimentos */
+        @media (min-width: 768px) {
+            .testimonials-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .testimonials-column-md {
+                display: flex;
+            }
+
+            .testimonials-header h2 {
+                font-size: 3rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .testimonials-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+
+            .testimonials-column-lg {
+                display: flex;
+            }
+
+            .testimonials-header h2 {
+                font-size: 3.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #testimonials-section {
+                padding: 2rem 0;
+            }
+
+            .testimonials-container {
+                padding: 0 1rem;
+            }
+
+            .testimonials-header h2 {
+                font-size: 2rem;
+            }
+
+            .testimonial-card {
+                padding: 1rem;
+                min-height: 150px;
+            }
+
+            .testimonials-grid {
+                max-height: 500px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1135,6 +1323,147 @@
                             <div class="quick-action-card" style="border-left: 4px solid var(--success-color);">
                                 <h4>✅ Certidões Prontas</h4>
                                 <p>2 certidões disponíveis para download</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção de Depoimentos -->
+            <div id="testimonials-section" class="section">
+                <div class="testimonials-container">
+                    <div class="testimonials-header">
+                        <div class="testimonials-badge">
+                            <span>💬 Depoimentos</span>
+                        </div>
+                        <h2>O que nossos clientes dizem</h2>
+                        <p>Veja o que nossos clientes têm a dizer sobre a usabilidade do ProtestoPro.</p>
+                    </div>
+
+                    <div class="testimonials-grid">
+                        <!-- Primeira Coluna -->
+                        <div class="testimonials-column">
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <p>"Este sistema revolucionou nossas operações de protesto, simplificando todo o processo. A plataforma baseada na nuvem nos mantém produtivos, mesmo remotamente."</p>
+                                </div>
+                                <div class="testimonial-author">
+                                    <img src="https://randomuser.me/api/portraits/women/1.jpg" alt="Briana Patton" class="author-avatar">
+                                    <div class="author-info">
+                                        <h4>Briana Patton</h4>
+                                        <span>Gerente de Operações</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <p>"A implementação do ProtestoPro foi suave e rápida. A interface personalizável e amigável tornou o treinamento da equipe sem esforço."</p>
+                                </div>
+                                <div class="testimonial-author">
+                                    <img src="https://randomuser.me/api/portraits/men/2.jpg" alt="Bilal Ahmed" class="author-avatar">
+                                    <div class="author-info">
+                                        <h4>Bilal Ahmed</h4>
+                                        <span>Gerente de TI</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <p>"A equipe de suporte é excepcional, nos orientando durante a configuração e fornecendo assistência contínua, garantindo nossa satisfação."</p>
+                                </div>
+                                <div class="testimonial-author">
+                                    <img src="https://randomuser.me/api/portraits/women/3.jpg" alt="Saman Malik" class="author-avatar">
+                                    <div class="author-info">
+                                        <h4>Saman Malik</h4>
+                                        <span>Líder de Suporte ao Cliente</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Segunda Coluna (visível em tablets+) -->
+                        <div class="testimonials-column testimonials-column-md">
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <p>"A integração perfeita do ProtestoPro melhorou nossas operações de cartório e eficiência. Altamente recomendado por sua interface intuitiva."</p>
+                                </div>
+                                <div class="testimonial-author">
+                                    <img src="https://randomuser.me/api/portraits/men/4.jpg" alt="Omar Raza" class="author-avatar">
+                                    <div class="author-info">
+                                        <h4>Omar Raza</h4>
+                                        <span>CEO</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <p>"Seus recursos robustos e suporte rápido transformaram nosso fluxo de trabalho, tornando-nos significativamente mais eficientes."</p>
+                                </div>
+                                <div class="testimonial-author">
+                                    <img src="https://randomuser.me/api/portraits/women/5.jpg" alt="Zainab Hussain" class="author-avatar">
+                                    <div class="author-info">
+                                        <h4>Zainab Hussain</h4>
+                                        <span>Gerente de Projeto</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <p>"A implementação suave superou as expectativas. Simplificou processos, melhorando o desempenho geral dos negócios."</p>
+                                </div>
+                                <div class="testimonial-author">
+                                    <img src="https://randomuser.me/api/portraits/women/6.jpg" alt="Aliza Khan" class="author-avatar">
+                                    <div class="author-info">
+                                        <h4>Aliza Khan</h4>
+                                        <span>Analista de Negócios</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Terceira Coluna (visível em desktop+) -->
+                        <div class="testimonials-column testimonials-column-lg">
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <p>"Nossas funções de cartório melhoraram com um design amigável e feedback positivo dos clientes."</p>
+                                </div>
+                                <div class="testimonial-author">
+                                    <img src="https://randomuser.me/api/portraits/men/7.jpg" alt="Farhan Siddiqui" class="author-avatar">
+                                    <div class="author-info">
+                                        <h4>Farhan Siddiqui</h4>
+                                        <span>Diretor de Marketing</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <p>"Eles entregaram uma solução que superou as expectativas, entendendo nossas necessidades e melhorando nossas operações."</p>
+                                </div>
+                                <div class="testimonial-author">
+                                    <img src="https://randomuser.me/api/portraits/women/8.jpg" alt="Sana Sheikh" class="author-avatar">
+                                    <div class="author-info">
+                                        <h4>Sana Sheikh</h4>
+                                        <span>Gerente de Vendas</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <p>"Usando o ProtestoPro, nossa presença online e conversões melhoraram significativamente, impulsionando o desempenho dos negócios."</p>
+                                </div>
+                                <div class="testimonial-author">
+                                    <img src="https://randomuser.me/api/portraits/men/9.jpg" alt="Hassan Ali" class="author-avatar">
+                                    <div class="author-info">
+                                        <h4>Hassan Ali</h4>
+                                        <span>Gerente de E-commerce</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
