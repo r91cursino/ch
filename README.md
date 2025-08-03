@@ -1,244 +1,78 @@
-# ProtestoPro - Sistema de Gestão de Protestos
+# ProtestoPro Monorepo
 
-![ProtestoPro](https://img.shields.io/badge/ProtestoPro-SaaS-blue) ![Flask](https://img.shields.io/badge/Flask-Backend-green) ![JavaScript](https://img.shields.io/badge/JavaScript-Frontend-yellow) ![SQLite](https://img.shields.io/badge/SQLite-Database-orange)
+Este repositório contém a landing page (frontend React) e o backend (SaaS Flask) do ProtestoPro, organizados em uma estrutura de monorepo para facilitar o deploy e a gestão.
 
-## 🎯 Sobre o Projeto
+## Estrutura do Repositório
 
-O **ProtestoPro** é um sistema completo de gestão de protestos desenvolvido como um SaaS (Software as a Service) moderno e funcional. O sistema oferece uma interface intuitiva e profissional para cartórios e empresas gerenciarem protestos, clientes, certidões e consultas de forma eficiente.
+- `/landing`: Contém o código-fonte da landing page, desenvolvida em React.
+- `/app`: Contém o código-fonte do backend (SaaS), desenvolvido em Flask.
 
-## 🌐 Demo Online
+## Deploy na Vercel
 
-**🔗 Acesse o sistema:** [https://9yhyi3czgnmd.manus.space](https://9yhyi3czgnmd.manus.space)
-
-## ✨ Funcionalidades Principais
-
-### 📊 Dashboard Inteligente
-- Estatísticas em tempo real
-- Indicadores de performance
-- Alertas e notificações
-- Gráficos de acompanhamento
-
-### 📋 Gestão de Protestos
-- Cadastro completo de protestos
-- Controle de status (Processando, Concluído, Rejeitado)
-- Acompanhamento de vencimentos
-- Histórico detalhado
-
-### 👥 Gestão de Clientes
-- Cadastro de pessoas físicas e jurídicas
-- Validação de documentos (CPF/CNPJ)
-- Histórico de relacionamento
-- Controle de protestos por cliente
-
-### 📜 Sistema de Certidões
-- Emissão de certidões positivas, negativas e detalhadas
-- Download automático
-- Envio por email
-- Controle de status
-
-### 🔍 Pesquisa de Protestos
-- Consulta por CPF, CNPJ ou nome
-- Simulação de consulta aos cartórios
-- Resultados detalhados
-- Histórico de consultas
-
-## 🛠️ Tecnologias Utilizadas
-
-### Backend
-- **Flask** - Framework web Python
-- **SQLAlchemy** - ORM para banco de dados
-- **SQLite** - Banco de dados
-- **Flask-CORS** - Suporte a CORS
-- **Python 3.11** - Linguagem de programação
-
-### Frontend
-- **HTML5** - Estrutura
-- **CSS3** - Estilização moderna
-- **JavaScript ES6+** - Interatividade
-- **Fetch API** - Comunicação com backend
-- **Design Responsivo** - Compatível com mobile
-
-### Infraestrutura
-- **Manus Cloud** - Deploy e hospedagem
-- **Git** - Controle de versão
-- **GitHub** - Repositório
-
-## 🏗️ Arquitetura do Sistema
-
-```
-ProtestoPro/
-├── src/
-│   ├── main.py              # Aplicação Flask principal
-│   ├── models/              # Modelos de dados
-│   │   ├── user.py         # Configuração SQLAlchemy
-│   │   ├── protesto.py     # Modelo Protesto
-│   │   ├── cliente.py      # Modelo Cliente
-│   │   └── certidao.py     # Modelo Certidão
-│   ├── routes/             # Rotas da API
-│   │   ├── protestos.py    # APIs de protestos
-│   │   ├── clientes.py     # APIs de clientes
-│   │   ├── certidoes.py    # APIs de certidões
-│   │   └── pesquisa.py     # APIs de pesquisa
-│   └── static/             # Arquivos estáticos
-│       ├── index.html      # Interface principal
-│       └── app.js          # JavaScript da aplicação
-├── database/               # Banco de dados
-├── venv/                   # Ambiente virtual Python
-└── requirements.txt        # Dependências
-```
-
-## 🚀 APIs Disponíveis
-
-### Dashboard
-- `GET /api/health` - Status da API
-- `GET /api/dashboard/estatisticas` - Estatísticas gerais
-
-### Protestos
-- `GET /api/protestos` - Listar protestos
-- `POST /api/protestos` - Criar protesto
-- `GET /api/protestos/{id}` - Obter protesto
-- `PUT /api/protestos/{id}` - Atualizar protesto
-- `DELETE /api/protestos/{id}` - Excluir protesto
-
-### Clientes
-- `GET /api/clientes` - Listar clientes
-- `POST /api/clientes` - Criar cliente
-- `GET /api/clientes/{id}` - Obter cliente
-- `PUT /api/clientes/{id}` - Atualizar cliente
-- `DELETE /api/clientes/{id}` - Excluir cliente
-
-### Certidões
-- `GET /api/certidoes` - Listar certidões
-- `POST /api/certidoes` - Criar certidão
-- `GET /api/certidoes/{id}/download` - Download certidão
-- `POST /api/certidoes/{id}/enviar-email` - Enviar por email
-
-### Pesquisa
-- `POST /api/pesquisa/protestos` - Pesquisar protestos
-
-## 📱 Interface do Usuário
-
-### Design Moderno
-- Interface limpa e profissional
-- Cores harmoniosas (azul, roxo, gradientes)
-- Tipografia legível
-- Ícones intuitivos
-
-### Responsividade
-- Compatível com desktop, tablet e mobile
-- Layout adaptativo
-- Touch-friendly para dispositivos móveis
-
-### Experiência do Usuário
-- Navegação intuitiva
-- Feedback visual em tempo real
-- Notificações de sucesso/erro
-- Loading states
-
-## 🔧 Instalação e Execução Local
+Este monorepo está configurado para ser facilmente deployado na Vercel. O arquivo `vercel.json` na raiz do projeto define as configurações de build e deploy para ambos os projetos.
 
 ### Pré-requisitos
-- Python 3.11+
-- Git
 
-### Passos para instalação
+- Conta na Vercel (vercel.com)
+- Vercel CLI instalado (npm install -g vercel)
 
-1. **Clone o repositório**
-```bash
-git clone https://github.com/r91cursino/ch.git
-cd ch
+### Passos para o Deploy
+
+1. **Clone o Repositório:**
+   ```bash
+   git clone https://github.com/r91cursino/ch.git
+   cd ch
+   ```
+
+2. **Conecte-se à Vercel (se ainda não o fez):**
+   ```bash
+   vercel login
+   ```
+
+3. **Faça o Deploy:**
+   Navegue até o diretório raiz do monorepo (`/home/ubuntu/ch`) e execute o comando de deploy da Vercel:
+   ```bash
+   vercel
+   ```
+   A Vercel detectará o arquivo `vercel.json` e configurará o deploy para ambos os projetos (`landing` e `app`) automaticamente.
+
+4. **Acesse as Aplicações:**
+   Após o deploy, a Vercel fornecerá URLs separadas para a landing page e para o backend (SaaS). Você poderá configurá-las conforme suas necessidades no dashboard da Vercel.
+
+### Configurações Adicionais (Opcional)
+
+Você pode ajustar as configurações de build e deploy no arquivo `vercel.json` conforme necessário. Por exemplo, para o backend Flask, você pode precisar configurar variáveis de ambiente para o banco de dados ou outras chaves de API.
+
+```json
+// vercel.json
+{
+  "build": {
+    "env": {
+      "PYTHON_VERSION": "3.9"
+    }
+  },
+  "projects": [
+    {
+      "name": "protestopro-landing",
+      "root": "./landing",
+      "buildCommand": "npm run build",
+      "outputDirectory": "./dist",
+      "devCommand": "npm run dev -- --host"
+    },
+    {
+      "name": "protestopro-saas",
+      "root": "./app",
+      "buildCommand": "pip install -r requirements.txt && python3 -m flask run",
+      "outputDirectory": "./",
+      "devCommand": "python3 -m flask run"
+    }
+  ]
+}
 ```
 
-2. **Crie o ambiente virtual**
-```bash
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# ou
-venv\Scripts\activate     # Windows
-```
-
-3. **Instale as dependências**
-```bash
-pip install -r requirements.txt
-```
-
-4. **Execute a aplicação**
-```bash
-python src/main.py
-```
-
-5. **Acesse o sistema**
-```
-http://localhost:5000
-```
-
-## 📊 Dados de Exemplo
-
-O sistema vem com dados de exemplo pré-carregados:
-
-### Clientes
-- João Silva & Cia (PJ)
-- Maria Santos (PF)
-- Pedro Oliveira ME (PJ)
-- Ana Costa (PF)
-
-### Protestos
-- 5 protestos com diferentes status
-- Valores variados (R$ 8.200 a R$ 35.600)
-- Documentos diversos (Duplicata, Cheque, Nota Promissória)
-
-### Certidões
-- 3 certidões de exemplo
-- Tipos: Positiva, Negativa, Detalhada
-- Status variados
-
-## 🔐 Segurança
-
-- Validação de dados no frontend e backend
-- Sanitização de inputs
-- Tratamento de erros robusto
-- CORS configurado adequadamente
-
-## 📈 Performance
-
-- APIs otimizadas com paginação
-- Carregamento assíncrono de dados
-- Cache de estatísticas
-- Consultas SQL eficientes
-
-## 🎨 Customização
-
-O sistema foi desenvolvido com foco na customização:
-
-- CSS modular e bem organizado
-- Variáveis CSS para cores e espaçamentos
-- Componentes JavaScript reutilizáveis
-- Estrutura de dados flexível
-
-## 🤝 Contribuição
-
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-## 📝 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
-
-## 👨‍💻 Desenvolvedor
-
-Desenvolvido com ❤️ por **Manus AI Agent**
-
-- **Repositório:** [https://github.com/r91cursino/ch](https://github.com/r91cursino/ch)
-- **Demo:** [https://9yhyi3czgnmd.manus.space](https://9yhyi3czgnmd.manus.space)
-
-## 📞 Suporte
-
-Para suporte ou dúvidas sobre o sistema, entre em contato através do repositório GitHub.
+**Nota:** O `buildCommand` para o backend Flask no `vercel.json` é um exemplo. Para um deploy de produção real, você precisaria de um servidor WSGI como Gunicorn ou uWSGI e um `Procfile` ou configuração similar para a Vercel executar sua aplicação Flask corretamente. O `outputDirectory` para o Flask também pode precisar ser ajustado dependendo de como sua aplicação é servida. Para este exemplo, ele aponta para a raiz do diretório `/app`.
 
 ---
 
-**ProtestoPro** - Transformando a gestão de protestos com tecnologia moderna e interface intuitiva.
+**Desenvolvido por Manus AI**
 
