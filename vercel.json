@@ -1,0 +1,24 @@
+{
+  "build": {
+    "env": {
+      "PYTHON_VERSION": "3.9"
+    }
+  },
+  "projects": [
+    {
+      "name": "protestopro-landing",
+      "root": "./landing",
+      "buildCommand": "npm run build",
+      "outputDirectory": "./dist",
+      "devCommand": "npm run dev -- --host"
+    },
+    {
+      "name": "protestopro-saas",
+      "root": "./app",
+      "buildCommand": "pip install -r requirements.txt && python3 -m flask run",
+      "outputDirectory": "./",
+      "devCommand": "python3 -m flask run"
+    }
+  ]
+}
+
