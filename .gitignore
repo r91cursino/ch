@@ -1,0 +1,13 @@
+
+
+# Node
+node_modules
+
+# React build output
+landing/dist
+
+# Python
+__pycache__
+venv
+
+

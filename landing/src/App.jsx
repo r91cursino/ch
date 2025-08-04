@@ -54,6 +54,13 @@ import './App.css'
 function App() {
   const [activeTestimonial, setActiveTestimonial] = useState(0)
   const [selectedArticle, setSelectedArticle] = useState(null)
+  const [showSignupModal, setShowSignupModal] = useState(false)
+  const [signupFormData, setSignupFormData] = useState({
+    nome: '',
+    email: '',
+    telefone: '',
+    empresa: ''
+  })
   const [formData, setFormData] = useState({
     nome: '',
     email: '',
@@ -198,6 +205,37 @@ function App() {
     }
   }
 
+  const handleSignupSubmit = async (e) => {
+    e.preventDefault()
+    
+    try {
+      // Simular envio do formulário de cadastro
+      console.log('Signup submitted:', signupFormData)
+      
+      // Mostrar mensagem de sucesso
+      alert('Cadastro realizado com sucesso! Você será redirecionado para a plataforma.')
+      
+      // Fechar modal
+      setShowSignupModal(false)
+      
+      // Limpar formulário
+      setSignupFormData({ nome: '', email: '', telefone: '', empresa: '' })
+      
+      // Redirecionar para o SaaS após 1 segundo
+      setTimeout(() => {
+        window.open('https://9yhyi3czgnmd.manus.space/', '_blank')
+      }, 1000)
+      
+    } catch (error) {
+      console.error('Erro ao enviar cadastro:', error)
+      alert('Erro ao enviar cadastro. Tente novamente.')
+    }
+  }
+
+  const openSignupModal = () => {
+    setShowSignupModal(true)
+  }
+
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -234,7 +272,7 @@ function App() {
           </nav>
           <Button 
             className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
-            onClick={() => window.open('https://9yhyi3czgnmd.manus.space/', '_blank')}
+            onClick={openSignupModal}
           >
             Começar Agora
           </Button>
@@ -282,7 +320,7 @@ function App() {
             <Button 
               size="lg" 
               className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-lg px-8 py-4"
-              onClick={() => window.open('https://9yhyi3czgnmd.manus.space/', '_blank')}
+              onClick={openSignupModal}
             >
               <DollarSign className="w-5 h-5 mr-2" />
               Recuperar Crédito Agora
@@ -291,7 +329,7 @@ function App() {
               size="lg" 
               variant="outline" 
               className="text-lg px-8 py-4 border-2"
-              onClick={() => window.open('https://9yhyi3czgnmd.manus.space/', '_blank')}
+              onClick={openSignupModal}
             >
               <Phone className="w-5 h-5 mr-2" />
               Falar com Especialista
@@ -691,7 +729,7 @@ function App() {
                 </p>
                 <Button 
                   className="bg-white text-blue-600 hover:bg-gray-100"
-                  onClick={() => window.open('https://9yhyi3czgnmd.manus.space/', '_blank')}
+                  onClick={openSignupModal}
                 >
                   Começar Agora
                   <ArrowRight className="w-4 h-4 ml-2" />
@@ -868,7 +906,7 @@ function App() {
 
               <Button 
                 className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-lg py-6"
-                onClick={() => window.open('https://9yhyi3czgnmd.manus.space/', '_blank')}
+                onClick={openSignupModal}
               >
                 <DollarSign className="w-5 h-5 mr-2" />
                 Começar com Básico
@@ -941,7 +979,7 @@ function App() {
 
               <Button 
                 className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-lg py-6"
-                onClick={() => window.open('https://9yhyi3czgnmd.manus.space/', '_blank')}
+                onClick={openSignupModal}
               >
                 <Zap className="w-5 h-5 mr-2" />
                 Começar com Profissional
@@ -1222,6 +1260,116 @@ function App() {
           </div>
         </div>
       </footer>
+
+      {/* Modal de Cadastro */}
+      {showSignupModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">Cadastre-se no ProtestoPro</h2>
+                <button
+                  onClick={() => setShowSignupModal(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <form onSubmit={handleSignupSubmit} className="space-y-4">
+                <div>
+                  <label htmlFor="signup-nome" className="block text-sm font-medium text-gray-700 mb-1">
+                    Nome Completo *
+                  </label>
+                  <Input
+                    id="signup-nome"
+                    type="text"
+                    value={signupFormData.nome}
+                    onChange={(e) => setSignupFormData({...signupFormData, nome: e.target.value})}
+                    required
+                    className="w-full"
+                    placeholder="Seu nome completo"
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="signup-email" className="block text-sm font-medium text-gray-700 mb-1">
+                    Email *
+                  </label>
+                  <Input
+                    id="signup-email"
+                    type="email"
+                    value={signupFormData.email}
+                    onChange={(e) => setSignupFormData({...signupFormData, email: e.target.value})}
+                    required
+                    className="w-full"
+                    placeholder="seu@email.com"
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="signup-telefone" className="block text-sm font-medium text-gray-700 mb-1">
+                    Telefone *
+                  </label>
+                  <Input
+                    id="signup-telefone"
+                    type="tel"
+                    value={signupFormData.telefone}
+                    onChange={(e) => setSignupFormData({...signupFormData, telefone: e.target.value})}
+                    required
+                    className="w-full"
+                    placeholder="(11) 99999-9999"
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="signup-empresa" className="block text-sm font-medium text-gray-700 mb-1">
+                    Empresa *
+                  </label>
+                  <Input
+                    id="signup-empresa"
+                    type="text"
+                    value={signupFormData.empresa}
+                    onChange={(e) => setSignupFormData({...signupFormData, empresa: e.target.value})}
+                    required
+                    className="w-full"
+                    placeholder="Nome da sua empresa"
+                  />
+                </div>
+                
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    <strong>🎉 Oferta Especial:</strong> Primeiros 30 dias grátis + suporte dedicado para novos clientes!
+                  </p>
+                </div>
+                
+                <div className="flex gap-3 pt-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setShowSignupModal(false)}
+                    className="flex-1"
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                  >
+                    Cadastrar e Acessar
+                  </Button>
+                </div>
+              </form>
+              
+              <div className="mt-6 pt-4 border-t border-gray-200">
+                <p className="text-xs text-gray-500 text-center">
+                  Ao se cadastrar, você concorda com nossos Termos de Uso e Política de Privacidade.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </>
@@ -1229,4 +1377,3 @@ function App() {
 }
 
 export default App
-
