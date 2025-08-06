@@ -233,7 +233,8 @@ function App() {
   }
 
   const openSignupModal = () => {
-    setShowSignupModal(true)
+    // Redirecionar para a tela de login/cadastro do SaaS
+    window.location.href = 'https://xlhyimcllmdz.manus.space/login.html'
   }
 
   const formatCurrency = (value) => {

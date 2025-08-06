@@ -3,7 +3,7 @@ import sys
 # DON'T CHANGE THIS !!!
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from flask import Flask, send_from_directory, jsonify
+from flask import Flask, send_from_directory, jsonify, session, redirect
 from flask_cors import CORS
 from src.models.user import db
 from src.models.protesto import Protesto
@@ -12,6 +12,7 @@ from src.models.certidao import Certidao
 
 # Importar blueprints
 from src.routes.user import user_bp
+from src.routes.auth import auth_bp
 from src.routes.protestos import protestos_bp
 from src.routes.clientes import clientes_bp
 from src.routes.certidoes import certidoes_bp
@@ -25,6 +26,7 @@ CORS(app, origins=['*'])
 
 # Registrar blueprints
 app.register_blueprint(user_bp, url_prefix='/api')
+app.register_blueprint(auth_bp, url_prefix='/api')
 app.register_blueprint(protestos_bp, url_prefix='/api')
 app.register_blueprint(clientes_bp, url_prefix='/api')
 app.register_blueprint(certidoes_bp, url_prefix='/api')
@@ -196,6 +198,14 @@ with app.app_context():
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
+    # Verificar se é uma rota que requer autenticação
+    protected_routes = ['', 'dashboard', 'protestos', 'clientes', 'certidoes', 'pesquisa', 'analytics', 'configuracoes']
+    
+    # Se for uma rota protegida e não estiver logado, redirecionar para login
+    if path in protected_routes or path == '':
+        if 'user_id' not in session:
+            return redirect('/login.html')
+    
     static_folder_path = app.static_folder
     if static_folder_path is None:
         return "Static folder not configured", 404
