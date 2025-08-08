@@ -3,7 +3,7 @@ import sys
 # DON'T CHANGE THIS !!!
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from flask import Flask, send_from_directory, jsonify, session, redirect
+from flask import Flask, send_from_directory, jsonify, session, redirect, render_template, request
 from flask_cors import CORS
 from src.models.user import db
 from src.models.protesto import Protesto
@@ -194,10 +194,23 @@ with app.app_context():
     if Cliente.query.count() == 0:
         criar_dados_exemplo()
 
-# Rota para servir o frontend
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve(path):
+# Rota para landing page
+@app.route('/')
+def index():
+    return render_template('landing.html')
+
+@app.route('/upload') 
+def upload_page():
+    source = request.args.get('source', '')
+    plan = request.args.get('plan', '')
+    nome = request.args.get('nome', '')
+    email = request.args.get('email', '')
+    return render_template('upload.html', source=source, plan=plan, nome=nome, email=email)
+
+# Rota para servir o frontend do SaaS
+@app.route('/dashboard', defaults={'path': ''})
+@app.route('/dashboard/<path:path>')
+def serve_dashboard(path):
     # Verificar se é uma rota que requer autenticação
     protected_routes = ['', 'dashboard', 'protestos', 'clientes', 'certidoes', 'pesquisa', 'analytics', 'configuracoes']
     

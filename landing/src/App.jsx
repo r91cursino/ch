@@ -55,6 +55,9 @@ function App() {
   const [activeTestimonial, setActiveTestimonial] = useState(0)
   const [selectedArticle, setSelectedArticle] = useState(null)
   const [showSignupModal, setShowSignupModal] = useState(false)
+  const [showPlanModal, setShowPlanModal] = useState(false)
+  const [selectedPlan, setSelectedPlan] = useState(null)
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [signupFormData, setSignupFormData] = useState({
     nome: '',
     email: '',
@@ -233,8 +236,10 @@ function App() {
   }
 
   const openSignupModal = () => {
-    // Redirecionar para a tela de login/cadastro do SaaS
-    window.location.href = 'https://xlhyimcllmdz.manus.space/login.html'
+    const pricingSection = document.getElementById("precos");
+    if (pricingSection) {
+      pricingSection.scrollIntoView({ behavior: "smooth" });
+    }
   }
 
   const formatCurrency = (value) => {

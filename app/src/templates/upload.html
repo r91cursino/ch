@@ -1,0 +1,3404 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProtestoPro - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #1e40af;
+            --secondary-color: #3b82f6;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem 0;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 0 2rem;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #ffffff, #e0e7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            position: relative;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: var(--glass-bg);
+            border-left-color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-link i {
+            margin-right: 1rem;
+            width: 20px;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        /* Mobile menu toggle */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--success-color));
+        }
+
+        .header h2 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(31, 38, 135, 0.5);
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-card h3 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+            font-weight: 800;
+        }
+
+        .stat-card p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .trend {
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .trend.up {
+            color: var(--success-color);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .trend.down {
+            color: var(--error-color);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(30, 64, 175, 0.1), rgba(59, 130, 246, 0.1));
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .card-header h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        /* Enhanced Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+            background: white;
+        }
+
+        .form-group input.error {
+            border-color: var(--error-color);
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        /* Enhanced Buttons */
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease;
+        }
+
+        .btn:hover::before {
+            width: 200%;
+            height: 200%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(30, 64, 175, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: white;
+        }
+
+        /* Enhanced Tables */
+        .table-container {
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table th {
+            background: var(--bg-primary);
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+            transform: scale(1.01);
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-badge.pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .status-badge.completed {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .status-badge.rejected {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+        }
+
+        /* Enhanced Action Buttons */
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: inherit;
+            font-family: inherit;
+            box-shadow: 0 4px 20px rgba(30, 64, 175, 0.3);
+            margin-bottom: 1rem;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(30, 64, 175, 0.4);
+        }
+
+        .action-btn i {
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+
+        /* Enhanced Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Enhanced Notifications */
+        .notification {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 2000;
+            display: none;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, var(--success-color), #34d399);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, var(--error-color), #f87171);
+        }
+
+        .notification.warning {
+            background: linear-gradient(135deg, var(--warning-color), #fbbf24);
+        }
+
+        .notification.show {
+            display: block;
+            animation: notificationSlide 0.5s ease;
+        }
+
+        @keyframes notificationSlide {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Search and Filter Bar */
+        .search-filter-bar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .filter-select {
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        /* Enhanced Charts Area */
+        .chart-container {
+            height: 300px;
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* Quick Actions Panel */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .quick-action-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(31, 38, 135, 0.3);
+        }
+
+        .quick-action-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .quick-action-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Enhanced Responsive Design */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                z-index: 1000;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                padding: 1rem;
+                margin-top: 4rem;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h2 {
+                font-size: 1.8rem;
+            }
+
+            .search-filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stat-card {
+                padding: 1.5rem;
+            }
+
+            .stat-card h3 {
+                font-size: 2rem;
+            }
+
+            .btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 1rem;
+            }
+        }
+
+        /* Estilos para o Requerimento Editável */
+        .requerimento-section {
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+        }
+
+        .requerimento-container {
+            background: white;
+            border-radius: 6px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .requerimento-header h4 {
+            color: var(--primary-color);
+            font-weight: bold;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .requerimento-section-item {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            border: 1px solid #e0e6ed;
+            border-radius: 6px;
+            background: #fafbfc;
+        }
+
+        .requerimento-section-item h5 {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 0.8rem;
+        }
+
+        .form-grid-requerimento {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group-small {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group-small label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.3rem;
+        }
+
+        .form-group-small input,
+        .form-group-small select {
+            padding: 0.6rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group-small input:focus,
+        .form-group-small select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .form-grid-requerimento {
+                grid-template-columns: 1fr;
+            }
+            
+            .requerimento-section {
+                padding: 1rem;
+                margin: 1rem 0;
+            }
+            
+            .requerimento-container {
+                padding: 1rem;
+            }
+        }
+
+        /* Estilos para Seção de Depoimentos */
+        #testimonials-section {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+            padding: 4rem 0;
+            margin: 2rem 0;
+        }
+
+        .testimonials-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .testimonials-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .testimonials-badge {
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .testimonials-badge span {
+            background: white;
+            border: 1px solid var(--primary-color);
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .testimonials-header h2 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .testimonials-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            max-height: 600px;
+            overflow: hidden;
+            mask-image: linear-gradient(to bottom, transparent, black 25%, black 75%, transparent);
+        }
+
+        .testimonials-column {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            animation: scrollUp 20s linear infinite;
+        }
+
+        .testimonials-column-md {
+            display: none;
+            animation: scrollUp 25s linear infinite;
+        }
+
+        .testimonials-column-lg {
+            display: none;
+            animation: scrollUp 18s linear infinite;
+        }
+
+        @keyframes scrollUp {
+            0% {
+                transform: translateY(100%);
+            }
+            100% {
+                transform: translateY(-100%);
+            }
+        }
+
+        .testimonial-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(74, 144, 226, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-height: 180px;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .testimonial-content {
+            margin-bottom: 1.5rem;
+        }
+
+        .testimonial-content p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-color);
+            margin: 0;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
+        }
+
+        .author-info h4 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .author-info span {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Responsividade para Depoimentos */
+        @media (min-width: 768px) {
+            .testimonials-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .testimonials-column-md {
+                display: flex;
+            }
+
+            .testimonials-header h2 {
+                font-size: 3rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .testimonials-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+
+            .testimonials-column-lg {
+                display: flex;
+            }
+
+            .testimonials-header h2 {
+                font-size: 3.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #testimonials-section {
+                padding: 2rem 0;
+            }
+
+            .testimonials-container {
+                padding: 0 1rem;
+            }
+
+            .testimonials-header h2 {
+                font-size: 2rem;
+            }
+
+            .testimonial-card {
+                padding: 1rem;
+                min-height: 150px;
+            }
+
+            .testimonials-grid {
+                max-height: 500px;
+            }
+        }
+
+        /* Pricing Section Styles */
+        #pricing-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 4rem 2rem;
+        }
+
+        .pricing-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .pricing-header {
+            margin-bottom: 3rem;
+        }
+
+        .pricing-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .pricing-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin: 3rem auto;
+            max-width: 600px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .pricing-main {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .price-badge {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .price-value {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .price-description {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .pricing-features {
+            margin: 2rem 0;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .feature-item:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .feature-text {
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .pricing-cta {
+            margin-top: 2rem;
+        }
+
+        .pricing-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* FAQ Section Styles */
+        #faq-section {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            padding: 4rem 2rem;
+        }
+
+        .faq-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .faq-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .faq-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .faq-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .faq-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .faq-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .faq-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .faq-question span:first-child {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .faq-icon {
+            font-size: 1.5rem;
+            font-weight: 300;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 0 1.5rem 1.5rem;
+            max-height: 200px;
+            opacity: 1;
+        }
+
+        .faq-answer {
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .pricing-title, .faq-title {
+                font-size: 2rem;
+            }
+
+            .price-value {
+                font-size: 2.5rem;
+            }
+
+            .pricing-card {
+                padding: 2rem;
+                margin: 2rem auto;
+            }
+
+            .pricing-stats {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+
+        /* Welcome Banner Styles */
+        .welcome-banner {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .welcome-banner .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .welcome-content h5 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .welcome-content p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .btn-close-banner {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-close-banner:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .welcome-banner .container {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            .welcome-content h5 {
+                font-size: 1.1rem;
+            }
+            
+            .welcome-content p {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% if source %}
+    <div class="welcome-banner">
+        <div class="container">
+            <div class="welcome-content">
+                <h5>🎉 Bem-vindo ao ProtestoPro{% if nome %}, {{ nome }}{% endif %}!</h5>
+                <p>
+                    {% if plan == 'basico' %}
+                        Você escolheu o <strong>Plano Básico</strong>. Comece fazendo upload dos seus títulos para protesto.
+                    {% elif plan == 'profissional' %}
+                        Você escolheu o <strong>Plano Profissional</strong>. Aproveite todos os recursos avançados da plataforma.
+                    {% else %}
+                        Você foi redirecionado da nossa landing page. Comece fazendo upload dos seus títulos para protesto.
+                    {% endif %}
+                </p>
+            </div>
+            <button class="btn-close-banner" onclick="this.parentElement.parentElement.style.display='none'">×</button>
+        </div>
+    </div>
+    {% endif %}
+    <!-- Mobile menu toggle -->
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <h1>⚖️ ProtestoPro</h1>
+                <p>Sistema de Gestão de Protestos</p>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active" data-section="dashboard">
+                            <i>📊</i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="protestos">
+                            <i>📋</i>
+                            <span>Protestos</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="clientes">
+                            <i>👥</i>
+                            <span>Clientes</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="documentos">
+                            <i>📄</i>
+                            <span>Documentos</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="financeiro">
+                            <i>💰</i>
+                            <span>Financeiro</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="relatorios">
+                            <i>📈</i>
+                            <span>Relatórios</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="certidoes">
+                            <i>📜</i>
+                            <span>Certidões</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="pesquisa">
+                            <i>🔍</i>
+                            <span>Pesquisa Protesto</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="analytics">
+                            <i>📈</i>
+                            <span>Analytics</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="configuracoes">
+                            <i>⚙️</i>
+                            <span>Configurações</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="section active">
+                <header class="header">
+                    <h2>Dashboard Principal</h2>
+                    <p>Acompanhe o desempenho e status dos seus protestos em tempo real</p>
+                </header>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <div class="quick-action-card" onclick="openModal('novoProtestoModal')">
+                        <h4>➕ Novo Protesto</h4>
+                        <p>Registrar um novo protesto no sistema</p>
+                    </div>
+                    <div class="quick-action-card" onclick="openModal('pesquisaRapidaModal')">
+                        <h4>🔍 Consulta Rápida</h4>
+                        <p>Pesquisar protestos por CPF/CNPJ</p>
+                    </div>
+                    <div class="quick-action-card" onclick="openModal('certidaoModal')">
+                        <h4>📜 Nova Certidão</h4>
+                        <p>Solicitar certidão de protesto</p>
+                    </div>
+                    <div class="quick-action-card" onclick="gerarRelatorioRapido()">
+                        <h4>📊 Relatório Rápido</h4>
+                        <p>Gerar relatório do período atual</p>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3 id="totalProtestos" data-stat="total-protestos">5</h3>
+                        <p>Total de Protestos</p>
+                        <span class="trend up">↗ +12% este mês</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="protestosAtivos" data-stat="protestos-ativos">2</h3>
+                        <p>Protestos Ativos</p>
+                        <span class="trend up">↗ +8% esta semana</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 57%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="valorCobranca" data-stat="valor-cobranca">R$ 28.300,00</h3>
+                        <p>Valor em Cobrança</p>
+                        <span class="trend down">↘ -3% este mês</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 82%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="taxaSucesso" data-stat="taxa-sucesso">40%</h3>
+                        <p>Taxa de Sucesso</p>
+                        <span class="trend up">↗ +5% este mês</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 92%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Grid -->
+                <div class="content-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Protestos Recentes</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="search-filter-bar">
+                                <input type="text" class="search-input" placeholder="Buscar protestos..." id="searchProtestos">
+                                <select class="filter-select" id="filterStatus">
+                                    <option value="">Todos os Status</option>
+                                    <option value="pending">Processando</option>
+                                    <option value="completed">Concluído</option>
+                                    <option value="rejected">Rejeitado</option>
+                                </select>
+                                <button class="btn btn-primary" onclick="filtrarProtestos()">Filtrar</button>
+                            </div>
+                            <div class="loading-spinner" id="loadingProtestos"></div>
+                            <div class="table-container">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Cliente</th>
+                                            <th>Valor</th>
+                                            <th>Status</th>
+                                            <th>Data</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="protestos-recentes-body">
+                                        <tr>
+                                            <td>João Silva & Cia</td>
+                                            <td>R$ 15.500,00</td>
+                                            <td><span class="status-badge pending">Processando</span></td>
+                                            <td>15/07/2025</td>
+                                            <td>
+                                                <button class="btn btn-secondary" onclick="verDetalhes(1)">Ver</button>
+                                                <button class="btn btn-warning" onclick="editarProtesto(1)">Editar</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Maria Santos LTDA</td>
+                                            <td>R$ 8.200,00</td>
+                                            <td><span class="status-badge completed">Concluído</span></td>
+                                            <td>14/07/2025</td>
+                                            <td>
+                                                <button class="btn btn-secondary" onclick="verDetalhes(2)">Ver</button>
+                                                <button class="btn btn-success" onclick="downloadDocumento(2)">Download</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Pedro Oliveira ME</td>
+                                            <td>R$ 22.100,00</td>
+                                            <td><span class="status-badge rejected">Rejeitado</span></td>
+                                            <td>13/07/2025</td>
+                                            <td>
+                                                <button class="btn btn-secondary" onclick="verDetalhes(3)">Ver</button>
+                                                <button class="btn btn-warning" onclick="reenviarProtesto(3)">Reenviar</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Resumo do Dia</h3>
+                        </div>
+                        <div class="card-body">
+                            <div style="margin-bottom: 2rem;">
+                                <h4 style="color: var(--primary-color); font-size: 2rem;">12</h4>
+                                <p style="color: var(--text-secondary);">Novos Protestos Hoje</p>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 60%"></div>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-bottom: 2rem;">
+                                <h4 style="color: var(--success-color); font-size: 2rem;">8</h4>
+                                <p style="color: var(--text-secondary);">Protestos Finalizados</p>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 80%"></div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 2rem;">
+                                <h4 style="color: var(--warning-color); font-size: 2rem;">R$ 45.200</h4>
+                                <p style="color: var(--text-secondary);">Valor Processado Hoje</p>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 90%"></div>
+                                </div>
+                            </div>
+
+                            <div class="chart-container">
+                                <p>Gráfico de Performance Diária</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alertas e Notificações -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>⚠️ Alertas e Pendências</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="quick-actions">
+                            <div class="quick-action-card" style="border-left: 4px solid var(--warning-color);">
+                                <h4>🕐 Vencimentos Próximos</h4>
+                                <p>5 protestos com vencimento em 3 dias</p>
+                            </div>
+                            <div class="quick-action-card" style="border-left: 4px solid var(--error-color);">
+                                <h4>📋 Documentos Pendentes</h4>
+                                <p>3 protestos aguardando documentação</p>
+                            </div>
+                            <div class="quick-action-card" style="border-left: 4px solid var(--success-color);">
+                                <h4>✅ Certidões Prontas</h4>
+                                <p>2 certidões disponíveis para download</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção de Depoimentos -->
+            <div id="testimonials-section" class="section">
+                <div class="testimonials-container">
+                    <div class="testimonials-header">
+                        <div class="testimonials-badge">
+                            <span>💬 Depoimentos</span>
+                        </div>
+                        <h2>O que nossos clientes dizem</h2>
+                        <p>Veja o que nossos clientes têm a dizer sobre a usabilidade do ProtestoPro.</p>
+                    </div>
+
+                    <div class="testimonials-grid">
+                        <!-- Primeira Coluna -->
+                        <div class="testimonials-column">
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <p>"Este sistema revolucionou nossas operações de protesto, simplificando todo o processo. A plataforma baseada na nuvem nos mantém produtivos, mesmo remotamente."</p>
+                                </div>
+                                <div class="testimonial-author">
+                                    <img src="https://randomuser.me/api/portraits/women/1.jpg" alt="Briana Patton" class="author-avatar">
+                                    <div class="author-info">
+                                        <h4>Briana Patton</h4>
+                                        <span>Gerente de Operações</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <p>"A implementação do ProtestoPro foi suave e rápida. A interface personalizável e amigável tornou o treinamento da equipe sem esforço."</p>
+                                </div>
+                                <div class="testimonial-author">
+                                    <img src="https://randomuser.me/api/portraits/men/2.jpg" alt="Bilal Ahmed" class="author-avatar">
+                                    <div class="author-info">
+                                        <h4>Bilal Ahmed</h4>
+                                        <span>Gerente de TI</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <p>"A equipe de suporte é excepcional, nos orientando durante a configuração e fornecendo assistência contínua, garantindo nossa satisfação."</p>
+                                </div>
+                                <div class="testimonial-author">
+                                    <img src="https://randomuser.me/api/portraits/women/3.jpg" alt="Saman Malik" class="author-avatar">
+                                    <div class="author-info">
+                                        <h4>Saman Malik</h4>
+                                        <span>Líder de Suporte ao Cliente</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Segunda Coluna (visível em tablets+) -->
+                        <div class="testimonials-column testimonials-column-md">
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <p>"A integração perfeita do ProtestoPro melhorou nossas operações de cartório e eficiência. Altamente recomendado por sua interface intuitiva."</p>
+                                </div>
+                                <div class="testimonial-author">
+                                    <img src="https://randomuser.me/api/portraits/men/4.jpg" alt="Omar Raza" class="author-avatar">
+                                    <div class="author-info">
+                                        <h4>Omar Raza</h4>
+                                        <span>CEO</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <p>"Seus recursos robustos e suporte rápido transformaram nosso fluxo de trabalho, tornando-nos significativamente mais eficientes."</p>
+                                </div>
+                                <div class="testimonial-author">
+                                    <img src="https://randomuser.me/api/portraits/women/5.jpg" alt="Zainab Hussain" class="author-avatar">
+                                    <div class="author-info">
+                                        <h4>Zainab Hussain</h4>
+                                        <span>Gerente de Projeto</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <p>"A implementação suave superou as expectativas. Simplificou processos, melhorando o desempenho geral dos negócios."</p>
+                                </div>
+                                <div class="testimonial-author">
+                                    <img src="https://randomuser.me/api/portraits/women/6.jpg" alt="Aliza Khan" class="author-avatar">
+                                    <div class="author-info">
+                                        <h4>Aliza Khan</h4>
+                                        <span>Analista de Negócios</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Terceira Coluna (visível em desktop+) -->
+                        <div class="testimonials-column testimonials-column-lg">
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <p>"Nossas funções de cartório melhoraram com um design amigável e feedback positivo dos clientes."</p>
+                                </div>
+                                <div class="testimonial-author">
+                                    <img src="https://randomuser.me/api/portraits/men/7.jpg" alt="Farhan Siddiqui" class="author-avatar">
+                                    <div class="author-info">
+                                        <h4>Farhan Siddiqui</h4>
+                                        <span>Diretor de Marketing</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <p>"Eles entregaram uma solução que superou as expectativas, entendendo nossas necessidades e melhorando nossas operações."</p>
+                                </div>
+                                <div class="testimonial-author">
+                                    <img src="https://randomuser.me/api/portraits/women/8.jpg" alt="Sana Sheikh" class="author-avatar">
+                                    <div class="author-info">
+                                        <h4>Sana Sheikh</h4>
+                                        <span>Gerente de Vendas</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <p>"Usando o ProtestoPro, nossa presença online e conversões melhoraram significativamente, impulsionando o desempenho dos negócios."</p>
+                                </div>
+                                <div class="testimonial-author">
+                                    <img src="https://randomuser.me/api/portraits/men/9.jpg" alt="Hassan Ali" class="author-avatar">
+                                    <div class="author-info">
+                                        <h4>Hassan Ali</h4>
+                                        <span>Gerente de E-commerce</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção de Preços -->
+            <div id="pricing-section" class="section">
+                <div class="pricing-container">
+                    <div class="pricing-header">
+                        <div class="pricing-badge">
+                            <span>💰 Preços</span>
+                        </div>
+                        <h2>Preços Transparentes</h2>
+                        <p>Modelo de negócio claro e sem surpresas. Pague apenas pelo que usar.</p>
+                    </div>
+                    
+                    <div class="pricing-card">
+                        <div class="pricing-main">
+                            <div class="price-badge">APENAS</div>
+                            <div class="price-value">R$ 21,90</div>
+                            <div class="price-description">
+                                para enviar um título. Será cobrada uma taxa de <strong>5%</strong> sobre o valor da dívida, caso o título seja pago pelo devedor.
+                            </div>
+                        </div>
+                        
+                        <div class="pricing-features">
+                            <div class="feature-item">
+                                <span class="feature-icon">✅</span>
+                                <span class="feature-text">Envio automático ao cartório</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">✅</span>
+                                <span class="feature-text">Acompanhamento em tempo real</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">✅</span>
+                                <span class="feature-text">Carta de anuência digital</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">✅</span>
+                                <span class="feature-text">Cancelamento com um clique</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">✅</span>
+                                <span class="feature-text">Suporte especializado</span>
+                            </div>
+                        </div>
+                        
+                        <div class="pricing-cta">
+                            <button class="btn btn-primary" onclick="openModal('novoProtestoModal')">
+                                Protestar Agora
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="pricing-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">60%</div>
+                            <div class="stat-label">dos devedores pagam em cartório</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">6.200+</div>
+                            <div class="stat-label">clientes cadastrados</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">R$ 83M</div>
+                            <div class="stat-label">em valores recuperados</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção de FAQ -->
+            <div id="faq-section" class="section">
+                <div class="faq-container">
+                    <div class="faq-header">
+                        <div class="faq-badge">
+                            <span>❓ Dúvidas Frequentes</span>
+                        </div>
+                        <h2>Perguntas e Respostas</h2>
+                        <p>Esclarecemos as principais dúvidas sobre nosso serviço</p>
+                    </div>
+                    
+                    <div class="faq-grid">
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>Por que tenho que pagar R$ 21,90 para enviar o título?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                É uma taxa de conveniência cobrada pelo ProtestoPro para manter a plataforma, encaminhar o título para o cartório, acompanhar o processo, encaminhar o pedido de cancelamento, quando for o caso, assim como a autorização de cancelamento (carta de anuência).
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>Precisarei desembolsar mais algum valor?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                Será cobrada uma comissão de 5% sobre o valor recebido, caso o título seja pago pelo devedor. Para títulos protestados, caso queira realizar o cancelamento do protesto sem utilizar a carta de anuência, será necessário pagar as despesas do cartório.
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>Como saberei o valor que terei de pagar para o cartório no cancelamento?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                Você deve realizar a solicitação de cancelamento na plataforma. Nossa equipe entrará em contato com o cartório para pesquisar o valor dos emolumentos cartorários e prazo para realizar o pedido junto ao cartório. Em seguida você será comunicado sobre o valor e como proceder com o pagamento.
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>Quero iniciar agora, o que eu preciso providenciar?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                Para iniciar a cobrança é necessário que você tenha o documento comprobatório da dívida e o certificado digital do credor ou de seu procurador. Com o título em mãos e o certificado instalado em seu computador, cadastre-se na plataforma, digite os dados do título para realizar o envio, e deixe nossa equipe cuidar de tudo para você!
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>Qual a taxa de sucesso do protesto?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                Estatisticamente, 60% dos devedores pagam em cartório se a dívida for cobrada logo após o vencimento. O protesto é regulamentado por lei e é uma das formas mais eficazes de cobrança.
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>Como funciona o cancelamento do protesto?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                Oferecemos duas opções: cancelamento automático através da carta de anuência digital (sem custos adicionais) ou cancelamento tradicional via cartório (com custos que variam por estado). O processo pode ser iniciado com apenas um clique na plataforma.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Protestos Section -->
+            <div id="protestos-section" class="section">
+                <header class="header">
+                    <h2>Gestão de Protestos</h2>
+                    <p>Gerencie todos os seus protestos de forma eficiente</p>
+                </header>
+
+                <div class="search-filter-bar">
+                    <input type="text" class="search-input" placeholder="Buscar por cliente, documento ou protocolo..." id="searchAllProtestos">
+                    <select class="filter-select" id="filterStatusAll">
+                        <option value="">Todos os Status</option>
+                        <option value="pending">Processando</option>
+                        <option value="completed">Concluído</option>
+                        <option value="rejected">Rejeitado</option>
+                    </select>
+                    <select class="filter-select" id="filterPeriodo">
+                        <option value="">Todos os Períodos</option>
+                        <option value="hoje">Hoje</option>
+                        <option value="semana">Esta Semana</option>
+                        <option value="mes">Este Mês</option>
+                        <option value="personalizado">Período Personalizado</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="openModal('novoProtestoModal')">
+                        ➕ Novo Protesto
+                    </button>
+                </div>
+
+                <div id="protestos-table-container" class="table-container">
+                    <!-- Tabela será gerada dinamicamente pelo JavaScript -->
+                </div>
+            </div>
+
+            <!-- Clientes Section -->
+            <div id="clientes-section" class="section">
+                <header class="header">
+                    <h2>Gestão de Clientes</h2>
+                    <p>Cadastre e gerencie seus clientes</p>
+                </header>
+
+                <div class="search-filter-bar">
+                    <input type="text" class="search-input" placeholder="Buscar por nome, documento ou email..." id="searchClientes">
+                    <select class="filter-select" id="filterTipoCliente">
+                        <option value="">Todos os Tipos</option>
+                        <option value="fisica">Pessoa Física</option>
+                        <option value="juridica">Pessoa Jurídica</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="openModal('clienteModal')">
+                        ➕ Novo Cliente
+                    </button>
+                </div>
+
+                <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                    <div class="stat-card">
+                        <h3>245</h3>
+                        <p>Total de Clientes</p>
+                        <span class="trend up">↗ +18 este mês</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>89</h3>
+                        <p>Clientes Ativos</p>
+                        <span class="trend up">↗ +12 esta semana</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>156</h3>
+                        <p>Pessoas Jurídicas</p>
+                        <span class="trend up">↗ +8 este mês</span>
+                    </div>
+                </div>
+
+                <div id="clientes-table-container" class="table-container">
+                    <!-- Tabela será gerada dinamicamente pelo JavaScript -->
+                </div>
+            </div>
+
+            <!-- Documentos Section -->
+            <div id="documentos-section" class="section">
+                <header class="header">
+                    <h2>Gestão de Documentos</h2>
+                    <p>Organize e gerencie todos os documentos dos protestos</p>
+                </header>
+
+                <div class="search-filter-bar">
+                    <input type="text" class="search-input" placeholder="Buscar documentos...">
+                    <select class="filter-select">
+                        <option value="">Todos os Tipos</option>
+                        <option value="duplicata">Duplicata</option>
+                        <option value="promissoria">Nota Promissória</option>
+                        <option value="cheque">Cheque</option>
+                        <option value="contrato">Contrato</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="openModal('uploadDocumentoModal')">
+                        📎 Upload Documento
+                    </button>
+                </div>
+
+                <div class="quick-actions">
+                    <div class="quick-action-card">
+                        <h4>📁 Documentos Pendentes</h4>
+                        <p>5 documentos aguardando revisão</p>
+                    </div>
+                    <div class="quick-action-card">
+                        <h4>✅ Documentos Aprovados</h4>
+                        <p>128 documentos validados</p>
+                    </div>
+                    <div class="quick-action-card">
+                        <h4>🔍 Digitalização</h4>
+                        <p>Sistema de OCR disponível</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <p>Sistema de upload e organização de documentos com OCR em desenvolvimento...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Financeiro Section -->
+            <div id="financeiro-section" class="section">
+                <header class="header">
+                    <h2>Controle Financeiro</h2>
+                    <p>Acompanhe receitas, despesas e fluxo de caixa</p>
+                </header>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>R$ 45.250</h3>
+                        <p>Receita do Mês</p>
+                        <span class="trend up">↗ +15% vs mês anterior</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>R$ 8.100</h3>
+                        <p>Despesas do Mês</p>
+                        <span class="trend down">↘ -5% vs mês anterior</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 30%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>R$ 37.150</h3>
+                        <p>Lucro Líquido</p>
+                        <span class="trend up">↗ +22% vs mês anterior</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 95%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>R$ 125.800</h3>
+                        <p>Contas a Receber</p>
+                        <span class="trend up">↗ +8% vs mês anterior</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 70%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Fluxo de Caixa - Últimos 30 Dias</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <p>Gráfico de Fluxo de Caixa</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Contas a Receber</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Cliente</th>
+                                            <th>Valor</th>
+                                            <th>Vencimento</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>João Silva & Cia</td>
+                                            <td>R$ 2.500,00</td>
+                                            <td>30/07/2025</td>
+                                            <td><span class="status-badge pending">Pendente</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Maria Santos LTDA</td>
+                                            <td>R$ 1.800,00</td>
+                                            <td>25/07/2025</td>
+                                            <td><span class="status-badge completed">Pago</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Relatórios Section -->
+            <div id="relatorios-section" class="section">
+                <header class="header">
+                    <h2>Relatórios e Analytics</h2>
+                    <p>Visualize dados e métricas importantes</p>
+                </header>
+
+                <div class="quick-actions">
+                    <div class="quick-action-card" onclick="openModal('relatorioModal')">
+                        <h4>📊 Relatório Personalizado</h4>
+                        <p>Crie relatórios sob medida</p>
+                    </div>
+                    <div class="quick-action-card" onclick="gerarRelatorioRapido('mensal')">
+                        <h4>📈 Relatório Mensal</h4>
+                        <p>Resumo do mês atual</p>
+                    </div>
+                    <div class="quick-action-card" onclick="gerarRelatorioRapido('anual')">
+                        <h4>📋 Relatório Anual</h4>
+                        <p>Balanço do ano</p>
+                    </div>
+                    <div class="quick-action-card" onclick="exportarDados()">
+                        <h4>💾 Exportar Dados</h4>
+                        <p>Baixar base de dados</p>
+                    </div>
+                </div>
+
+                <div class="content-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Performance dos Últimos 6 Meses</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <p>Gráfico de Performance</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Relatórios Recentes</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Relatório</th>
+                                            <th>Data</th>
+                                            <th>Tipo</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Relatório Mensal - Julho</td>
+                                            <td>20/07/2025</td>
+                                            <td>PDF</td>
+                                            <td>
+                                                <button class="btn btn-secondary">Download</button>
+                                                <button class="btn btn-warning">Reenviar</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Section (Nova) -->
+            <div id="analytics-section" class="section">
+                <header class="header">
+                    <h2>Analytics Avançado</h2>
+                    <p>Análise profunda de dados e tendências</p>
+                </header>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>68%</h3>
+                        <p>Taxa de Conversão</p>
+                        <span class="trend up">↗ +5% vs período anterior</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>4.2 dias</h3>
+                        <p>Tempo Médio de Processo</p>
+                        <span class="trend down">↘ -0.8 dias</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>R$ 18.500</h3>
+                        <p>Ticket Médio</p>
+                        <span class="trend up">↗ +12% este mês</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>94%</h3>
+                        <p>Satisfação do Cliente</p>
+                        <span class="trend up">↗ +3% este mês</span>
+                    </div>
+                </div>
+
+                <div class="content-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Análise de Tendências</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <p>Gráfico de Tendências de Protestos</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Heatmap de Atividades</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <p>Mapa de Calor das Atividades</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Certidões Section -->
+            <div id="certidoes-section" class="section">
+                <header class="header">
+                    <h2>Gestão de Certidões</h2>
+                    <p>Solicite e gerencie certidões de protesto</p>
+                </header>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>34</h3>
+                        <p>Certidões Solicitadas</p>
+                        <span class="trend up">↗ +8 esta semana</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>28</h3>
+                        <p>Certidões Emitidas</p>
+                        <span class="trend up">↗ +6 esta semana</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>6</h3>
+                        <p>Em Processamento</p>
+                        <span class="trend down">↘ -2 vs semana anterior</span>
+                    </div>
+                </div>
+
+                <div class="search-filter-bar">
+                    <input type="text" class="search-input" placeholder="Buscar certidões por protocolo ou nome...">
+                    <select class="filter-select">
+                        <option value="">Todos os Status</option>
+                        <option value="pending">Processando</option>
+                        <option value="completed">Emitida</option>
+                        <option value="rejected">Rejeitada</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="openModal('certidaoModal')">
+                        📜 Nova Solicitação
+                    </button>
+                </div>
+
+                <div class="content-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Certidões Recentes</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="certidoes-table-container" class="table-container">
+                                <!-- Tabela será gerada dinamicamente pelo JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Tipos de Certidão</h3>
+                        </div>
+                        <div class="card-body">
+                            <div style="margin-bottom: 1rem;">
+                                <h4 style="color: var(--primary-color); margin-bottom: 0.5rem;">📄 Certidão Positiva</h4>
+                                <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                                    Certifica a existência de protestos em nome da pessoa consultada.
+                                </p>
+                            </div>
+                            <div style="margin-bottom: 1rem;">
+                                <h4 style="color: var(--primary-color); margin-bottom: 0.5rem;">✅ Certidão Negativa</h4>
+                                <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                                    Certifica a inexistência de protestos em nome da pessoa consultada.
+                                </p>
+                            </div>
+                            <div>
+                                <h4 style="color: var(--primary-color); margin-bottom: 0.5rem;">📋 Certidão Detalhada</h4>
+                                <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                                    Apresenta informações detalhadas sobre os protestos encontrados.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pesquisa Protesto Section -->
+            <div id="pesquisa-section" class="section">
+                <header class="header">
+                    <h2>Pesquisa de Protestos</h2>
+                    <p>Consulte protestos por CPF, CNPJ ou nome</p>
+                </header>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Consulta de Protestos</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="pesquisaForm">
+                            <div class="form-grid" style="grid-template-columns: 1fr 1fr 200px; align-items: end;">
+                                <div class="form-group">
+                                    <label>Tipo de Consulta</label>
+                                    <select name="tipoConsulta" required onchange="updateSearchFields()">
+                                        <option value="">Selecione</option>
+                                        <option value="cpf">CPF</option>
+                                        <option value="cnpj">CNPJ</option>
+                                        <option value="nome">Nome/Razão Social</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label id="searchLabel">Documento/Nome</label>
+                                    <input type="text" name="valorConsulta" id="searchInput" required>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                        🔍 Pesquisar
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Container para resultados da pesquisa -->
+                <div id="resultados-pesquisa" style="display: none; margin-top: 2rem;">
+                    <!-- Resultados serão inseridos aqui pelo JavaScript -->
+                </div>
+
+                <div id="resultadoPesquisa" class="card" style="display: none; margin-top: 2rem;">
+                    <div class="card-header">
+                        <h3>Resultado da Pesquisa</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="dadosConsultado" style="background: var(--bg-primary); padding: 1.5rem; border-radius: 10px; margin-bottom: 2rem;">
+                            <!-- Dados do consultado serão inseridos aqui -->
+                        </div>
+
+                        <div class="loading-spinner" id="loadingPesquisa"></div>
+
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Protocolo</th>
+                                        <th>Cartório</th>
+                                        <th>Valor</th>
+                                        <th>Data Protesto</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resultados-table-body">
+                                    <!-- Resultados serão inseridos aqui -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div style="margin-top: 2rem; text-align: center;">
+                            <button class="btn btn-primary" onclick="gerarCertidaoResultado()">
+                                📜 Gerar Certidão desta Consulta
+                            </button>
+                            <button class="btn btn-secondary" onclick="exportarResultados()">
+                                📊 Exportar Resultados
+                            </button>
+                            <button class="btn btn-warning" onclick="imprimirDetalhes()">
+                                🖨️ Imprimir Resultados
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-grid" style="margin-top: 2rem;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Histórico de Consultas</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Data/Hora</th>
+                                            <th>Tipo</th>
+                                            <th>Consultado</th>
+                                            <th>Resultados</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="historico-consultas-body">
+                                        <tr>
+                                            <td>24/07/2025 14:30</td>
+                                            <td>CPF</td>
+                                            <td>123.456.789-00</td>
+                                            <td><span class="status-badge completed">2 protestos</span></td>
+                                            <td>
+                                                <button class="btn btn-secondary" onclick="repetirConsulta('cpf', '123.456.789-00')">Repetir</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>24/07/2025 10:15</td>
+                                            <td>CNPJ</td>
+                                            <td>12.345.678/0001-90</td>
+                                            <td><span class="status-badge pending">Nenhum protesto</span></td>
+                                            <td>
+                                                <button class="btn btn-secondary" onclick="repetirConsulta('cnpj', '12.345.678/0001-90')">Repetir</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Estatísticas de Consulta</h3>
+                        </div>
+                        <div class="card-body">
+                            <div style="margin-bottom: 1.5rem;">
+                                <h4 style="color: var(--primary-color);">47</h4>
+                                <p style="color: var(--text-secondary);">Consultas hoje</p>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 65%"></div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 1.5rem;">
+                                <h4 style="color: var(--success-color);">312</h4>
+                                <p style="color: var(--text-secondary);">Consultas este mês</p>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 80%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 style="color: var(--warning-color);">68%</h4>
+                                <p style="color: var(--text-secondary);">Taxa de protestos encontrados</p>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 68%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configurações Section -->
+            <div id="configuracoes-section" class="section">
+                <header class="header">
+                    <h2>Configurações do Sistema</h2>
+                    <p>Configure preferências e parâmetros do sistema</p>
+                </header>
+
+                <div class="content-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Configurações Gerais</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="configGeralForm">
+                                <div class="form-group">
+                                    <label>Nome da Empresa</label>
+                                    <input type="text" name="nomeEmpresa" value="ProtestoPro Serviços Jurídicos LTDA">
+                                </div>
+                                <div class="form-group">
+                                    <label>CNPJ</label>
+                                    <input type="text" name="cnpj" value="12.345.678/0001-90">
+                                </div>
+                                <div class="form-group">
+                                    <label>Email Padrão</label>
+                                    <input type="email" name="emailPadrao" value="contato@protestopro.com">
+                                </div>
+                                <div class="form-group">
+                                    <label>Telefone</label>
+                                    <input type="tel" name="telefone" value="(11) 3333-4444">
+                                </div>
+                                <div class="form-group">
+                                    <label>Endereço</label>
+                                    <textarea name="endereco" rows="3">Rua das Flores, 123 - Centro - São Paulo/SP</textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Salvar Configurações</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Configurações de Notificação</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="configNotificacaoForm">
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" name="emailProtesto" checked style="width: auto; margin-right: 0.5rem;">
+                                        Notificar por email sobre novos protestos
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" name="emailVencimento" checked style="width: auto; margin-right: 0.5rem;">
+                                        Alertas de vencimento próximo
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" name="emailCertidao" checked style="width: auto; margin-right: 0.5rem;">
+                                        Notificar quando certidões estiverem prontas
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" name="smsUrgente" style="width: auto; margin-right: 0.5rem;">
+                                        SMS para casos urgentes
+                                    </label>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Salvar Notificações</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Configurações de Segurança</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="configSegurancaForm">
+                                <div class="form-group">
+                                    <label>Senha Atual</label>
+                                    <input type="password" name="senhaAtual" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Nova Senha</label>
+                                    <input type="password" name="novaSenha" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Confirmar Nova Senha</label>
+                                    <input type="password" name="confirmarSenha" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" name="autenticacao2FA" style="width: auto; margin-right: 0.5rem;">
+                                        Ativar autenticação de dois fatores (2FA)
+                                    </label>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Alterar Senha</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Backup e Exportação</h3>
+                        </div>
+                        <div class="card-body">
+                            <div style="margin-bottom: 2rem;">
+                                <h4 style="color: var(--primary-color); margin-bottom: 1rem;">Backup Automático</h4>
+                                <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                                    Último backup: 24/07/2025 às 14:30
+                                </p>
+                                <button class="btn btn-secondary" onclick="realizarBackupManual()">
+                                    💾 Backup Manual
+                                </button>
+                                <button class="btn btn-warning" onclick="configurarBackupAutomatico()">
+                                    ⚙️ Configurar Backup
+                                </button>
+                            </div>
+                            
+                            <div>
+                                <h4 style="color: var(--primary-color); margin-bottom: 1rem;">Exportar Dados</h4>
+                                <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                                    <button class="btn btn-primary" onclick="exportarDados('protestos')">
+                                        📋 Exportar Protestos
+                                    </button>
+                                    <button class="btn btn-primary" onclick="exportarDados('clientes')">
+                                        👥 Exportar Clientes
+                                    </button>
+                                    <button class="btn btn-primary" onclick="exportarDados('certidoes')">
+                                        📜 Exportar Certidões
+                                    </button>
+                                    <button class="btn btn-primary" onclick="exportarDados('completo')">
+                                        📊 Exportar Completo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modais Aprimorados -->
+    
+    <!-- Modal Novo Protesto -->
+    <div id="novoProtestoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Novo Protesto</h2>
+                <button class="close-btn" onclick="closeModal('novoProtestoModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="protestoForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Cliente *</label>
+                            <select name="cliente" required>
+                                <option value="">Selecione um cliente</option>
+                                <option value="1">João Silva & Cia</option>
+                                <option value="2">Maria Santos LTDA</option>
+                                <option value="3">Pedro Oliveira ME</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de Documento *</label>
+                            <select name="tipoDocumento" required onchange="updateDocumentFields()">
+                                <option value="">Selecione o tipo</option>
+                                <option value="duplicata">Duplicata</option>
+                                <option value="nota_promissoria">Nota Promissória</option>
+                                <option value="cheque">Cheque</option>
+                                <option value="contrato">Contrato</option>
+                                <option value="outros">Outros</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Número do Documento *</label>
+                            <input type="text" name="numeroDocumento" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Valor (R$) *</label>
+                            <input type="number" name="valor" step="0.01" required min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Data de Vencimento *</label>
+                            <input type="date" name="dataVencimento" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Prazo para Protesto (dias)</label>
+                            <input type="number" name="prazoProtesto" value="3" min="1" max="30">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Endereço do Devedor</label>
+                        <textarea name="enderecoDevedor" rows="2" placeholder="Endereço completo para intimação"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Observações</label>
+                        <textarea name="observacoes" rows="3" placeholder="Informações adicionais sobre o protesto"></textarea>
+                    </div>
+
+                    <!-- Seção do Requerimento Editável -->
+                    <div class="form-group requerimento-section">
+                        <label style="font-weight: bold; color: var(--primary-color); margin-bottom: 1rem; display: block;">
+                            📄 Requerimento para Protesto (Editável)
+                        </label>
+                        <div class="requerimento-container">
+                            <div class="requerimento-header">
+                                <h4 style="text-align: center; margin-bottom: 1rem; color: var(--text-color);">
+                                    Duplicata por Indicação com Requerimento para Protesto
+                                </h4>
+                                <p style="text-align: justify; font-size: 0.9rem; line-height: 1.5; margin-bottom: 1.5rem;">
+                                    Nos termos do art. 2°, I°, do Provimento n° 87 de 2019 do Conselho Nacional de Justiça, solicito o protesto do título abaixo indicado, 
+                                    declarando para os devidos fins que sob as penas constantes da lei, que a dívida em questão constitui dívida líquida, certa e 
+                                    exigível, comprobatórias da causa que ensejou a apresentação para protesto, são mantidas em nosso poder, comprometendo-nos a 
+                                    exibi-las sempre que exigidas no lugar onde for determinado, especialmente se sobrevier sustação judicial do protesto.
+                                </p>
+                            </div>
+
+                            <!-- 1) Identificação do Título ou Documento de Dívida -->
+                            <div class="requerimento-section-item">
+                                <h5>1) Identificação do Título ou Documento de Dívida</h5>
+                                <div class="form-grid-requerimento">
+                                    <div class="form-group-small">
+                                        <label>Espécie:</label>
+                                        <input type="text" name="req_especie" placeholder="Ex: Duplicata">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Banco (p/ Cheque):</label>
+                                        <input type="text" name="req_banco" placeholder="Nome do banco">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Nº do Título:</label>
+                                        <input type="text" name="req_numero_titulo" placeholder="Número">
+                                    </div>
+                                </div>
+                                <div class="form-grid-requerimento">
+                                    <div class="form-group-small">
+                                        <label>Data Emissão:</label>
+                                        <input type="date" name="req_data_emissao">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Data Vencimento:</label>
+                                        <input type="date" name="req_data_vencimento">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Praça de Pagamento:</label>
+                                        <input type="text" name="req_praca_pagamento" value="DOURADOS-MS">
+                                    </div>
+                                </div>
+                                <div class="form-grid-requerimento">
+                                    <div class="form-group-small">
+                                        <label>Valor do Título R$:</label>
+                                        <input type="number" name="req_valor_titulo" step="0.01" placeholder="0,00">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Valor a Protestar R$:</label>
+                                        <input type="number" name="req_valor_protestar" step="0.01" placeholder="0,00">
+                                    </div>
+                                    <div class="form-group-small"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Observações:</label>
+                                    <textarea name="req_observacoes_titulo" rows="2" placeholder="Observações sobre o título"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- 2) Identificação do Devedor -->
+                            <div class="requerimento-section-item">
+                                <h5>2) Identificação do Devedor</h5>
+                                <div class="form-group">
+                                    <label>Nome:</label>
+                                    <input type="text" name="req_devedor_nome" placeholder="Nome completo do devedor">
+                                </div>
+                                <div class="form-grid-requerimento">
+                                    <div class="form-group-small">
+                                        <label>CPF:</label>
+                                        <input type="text" name="req_devedor_cpf" placeholder="000.000.000-00">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Telefone:</label>
+                                        <input type="text" name="req_devedor_telefone" placeholder="(67) 00000-0000">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>CEP:</label>
+                                        <input type="text" name="req_devedor_cep" placeholder="00000-000">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Endereço:</label>
+                                    <input type="text" name="req_devedor_endereco" placeholder="Rua, número, complemento">
+                                </div>
+                                <div class="form-grid-requerimento">
+                                    <div class="form-group-small">
+                                        <label>Bairro:</label>
+                                        <input type="text" name="req_devedor_bairro" placeholder="Bairro">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Cidade:</label>
+                                        <input type="text" name="req_devedor_cidade" placeholder="Cidade">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Estado:</label>
+                                        <input type="text" name="req_devedor_estado" placeholder="UF" maxlength="2">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 3) Identificação do Credor e Apresentante a protesto -->
+                            <div class="requerimento-section-item">
+                                <h5>3) Identificação do Credor e Apresentante a protesto:</h5>
+                                <div class="form-group">
+                                    <label>Nome:</label>
+                                    <input type="text" name="req_credor_nome" placeholder="Nome/Razão Social do credor">
+                                </div>
+                                <div class="form-grid-requerimento">
+                                    <div class="form-group-small">
+                                        <label>CPF/CNPJ:</label>
+                                        <input type="text" name="req_credor_documento" placeholder="000.000.000-00 ou 00.000.000/0001-00">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Telefone:</label>
+                                        <input type="text" name="req_credor_telefone" placeholder="(67) 00000-0000">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>CEP:</label>
+                                        <input type="text" name="req_credor_cep" placeholder="00000-000">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Endereço:</label>
+                                    <input type="text" name="req_credor_endereco" placeholder="Rua, número, complemento">
+                                </div>
+                                <div class="form-grid-requerimento">
+                                    <div class="form-group-small">
+                                        <label>Bairro:</label>
+                                        <input type="text" name="req_credor_bairro" placeholder="Bairro">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Cidade:</label>
+                                        <input type="text" name="req_credor_cidade" placeholder="Cidade">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Estado:</label>
+                                        <input type="text" name="req_credor_estado" placeholder="UF" maxlength="2">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Texto de autorização -->
+                            <div class="requerimento-section-item">
+                                <p style="text-align: justify; font-size: 0.85rem; line-height: 1.4; margin: 1rem 0;">
+                                    <strong>Autorizo a publicação de edital caso o devedor não seja encontrado no endereço fornecido.</strong> 
+                                    No caso de Duplicatas, declaro ter documento comprobatório da origem do título e/ou da efetiva entrega da mercadoria/ 
+                                    prestação do serviço, apresentando-o quando exigido. Responsabilizo-me civil e criminalmente pelas informações 
+                                    abaixo declaradas.
+                                </p>
+                            </div>
+
+                            <!-- Dados bancários para transferência -->
+                            <div class="requerimento-section-item">
+                                <h5>No caso de pagamento pelo devedor, autorizo a transferência dos valores para a seguinte conta ou pelo PIX:</h5>
+                                <div class="form-grid-requerimento">
+                                    <div class="form-group-small">
+                                        <label>Banco:</label>
+                                        <input type="text" name="req_banco_transferencia" placeholder="Nome do banco">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Agência:</label>
+                                        <input type="text" name="req_agencia" placeholder="0000">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>Conta:</label>
+                                        <input type="text" name="req_conta" placeholder="00000-0">
+                                    </div>
+                                </div>
+                                <div class="form-grid-requerimento">
+                                    <div class="form-group-small">
+                                        <label>Titular:</label>
+                                        <input type="text" name="req_titular_conta" placeholder="Nome do titular da conta">
+                                    </div>
+                                    <div class="form-group-small">
+                                        <label>CPF/CNPJ:</label>
+                                        <input type="text" name="req_titular_documento" placeholder="000.000.000-00">
+                                    </div>
+                                    <div class="form-group-small"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" name="urgente" style="width: auto; margin-right: 0.5rem;">
+                            Marcar como urgente (taxa adicional)
+                        </label>
+                    </div>
+                    
+                    <div style="text-align: right; margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('novoProtestoModal')">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Criar Protesto</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Cliente Aprimorado -->
+    <div id="clienteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Cadastro de Cliente</h2>
+                <button class="close-btn" onclick="closeModal('clienteModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="clienteForm">
+                    <div class="form-group">
+                        <label>Tipo de Pessoa *</label>
+                        <select name="tipoPessoa" required onchange="toggleDocumentType()">
+                            <option value="">Selecione</option>
+                            <option value="fisica">Pessoa Física</option>
+                            <option value="juridica">Pessoa Jurídica</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nome/Razão Social *</label>
+                            <input type="text" name="nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label id="documentLabel">CPF/CNPJ *</label>
+                            <input type="text" name="documento" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Email *</label>
+                            <input type="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Telefone *</label>
+                            <input type="tel" name="telefone" required>
+                        </div>
+                    </div>
+
+                    <div id="pessoaJuridicaFields" style="display: none;">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nome Fantasia</label>
+                                <input type="text" name="nomeFantasia">
+                            </div>
+                            <div class="form-group">
+                                <label>Inscrição Estadual</label>
+                                <input type="text" name="inscricaoEstadual">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Representante Legal</label>
+                            <input type="text" name="representanteLegal">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Endereço Completo</label>
+                        <textarea name="endereco" rows="2"></textarea>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>CEP</label>
+                            <input type="text" name="cep" maxlength="9" onblur="buscarCEP(this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label>Cidade</label>
+                            <input type="text" name="cidade">
+                        </div>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Estado</label>
+                            <select name="estado">
+                                <option value="">Selecione</option>
+                                <option value="AC">Acre</option>
+                                <option value="AL">Alagoas</option>
+                                <option value="AP">Amapá</option>
+                                <option value="AM">Amazonas</option>
+                                <option value="BA">Bahia</option>
+                                <option value="CE">Ceará</option>
+                                <option value="DF">Distrito Federal</option>
+                                <option value="ES">Espírito Santo</option>
+                                <option value="GO">Goiás</option>
+                                <option value="MA">Maranhão</option>
+                                <option value="MT">Mato Grosso</option>
+                                <option value="MS">Mato Grosso do Sul</option>
+                                <option value="MG">Minas Gerais</option>
+                                <option value="PA">Pará</option>
+                                <option value="PB">Paraíba</option>
+                                <option value="PR">Paraná</option>
+                                <option value="PE">Pernambuco</option>
+                                <option value="PI">Piauí</option>
+                                <option value="RJ">Rio de Janeiro</option>
+                                <option value="RN">Rio Grande do Norte</option>
+                                <option value="RS">Rio Grande do Sul</option>
+                                <option value="RO">Rondônia</option>
+                                <option value="RR">Roraima</option>
+                                <option value="SC">Santa Catarina</option>
+                                <option value="SP">São Paulo</option>
+                                <option value="SE">Sergipe</option>
+                                <option value="TO">Tocantins</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Bairro</label>
+                            <input type="text" name="bairro">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Observações</label>
+                        <textarea name="observacoesCliente" rows="2" placeholder="Informações adicionais sobre o cliente"></textarea>
+                    </div>
+                    
+                    <div style="text-align: right; margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('clienteModal')">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Cadastrar Cliente</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Certidão Aprimorado -->
+    <div id="certidaoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Solicitar Certidão</h2>
+                <button class="close-btn" onclick="closeModal('certidaoModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="certidaoForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Tipo de Certidão *</label>
+                            <select name="tipoCertidao" required onchange="updateCertidaoInfo()">
+                                <option value="">Selecione o tipo</option>
+                                <option value="positiva">Certidão Positiva</option>
+                                <option value="negativa">Certidão Negativa</option>
+                                <option value="detalhada">Certidão Detalhada</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de Pessoa *</label>
+                            <select name="tipoPessoaCertidao" required onchange="toggleDocumentTypeCertidao()">
+                                <option value="">Selecione</option>
+                                <option value="fisica">Pessoa Física</option>
+                                <option value="juridica">Pessoa Jurídica</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nome/Razão Social *</label>
+                            <input type="text" name="nomeRequerente" required>
+                        </div>
+                        <div class="form-group">
+                            <label id="documentLabelCertidao">CPF/CNPJ *</label>
+                            <input type="text" name="documentoRequerente" required>
+                        </div>
+                    </div>
+
+                    <div id="certidaoInfo" class="form-group" style="background: var(--bg-primary); padding: 1rem; border-radius: 8px; margin: 1rem 0; display: none;">
+                        <p id="certidaoDescription"></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Finalidade da Certidão *</label>
+                        <textarea name="finalidade" rows="3" required placeholder="Ex: Participação em licitação, financiamento bancário, etc."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Observações</label>
+                        <textarea name="observacoesCertidao" rows="2" placeholder="Informações adicionais"></textarea>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="urgente" style="width: auto; margin-right: 0.5rem;">
+                                Solicitação Urgente (taxa adicional de R$ 50,00)
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="enviarEmail" checked style="width: auto; margin-right: 0.5rem;">
+                                Enviar por email quando pronta
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: right; margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('certidaoModal')">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Solicitar Certidão</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Pesquisa Rápida -->
+    <div id="pesquisaRapidaModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Consulta Rápida</h2>
+                <button class="close-btn" onclick="closeModal('pesquisaRapidaModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="pesquisaRapidaForm">
+                    <div class="form-group">
+                        <label>Tipo de Consulta *</label>
+                        <select name="tipoConsultaRapida" required onchange="updateSearchFieldsRapida()">
+                            <option value="">Selecione</option>
+                            <option value="cpf">CPF</option>
+                            <option value="cnpj">CNPJ</option>
+                            <option value="nome">Nome/Razão Social</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label id="searchLabelRapida">Documento/Nome *</label>
+                        <input type="text" name="valorConsultaRapida" id="searchInputRapida" required>
+                    </div>
+                    
+                    <div style="text-align: right; margin-top: 2rem;">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('pesquisaRapidaModal')">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">🔍 Pesquisar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Upload Documento -->
+    <div id="uploadDocumentoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Upload de Documento</h2>
+                <button class="close-btn" onclick="closeModal('uploadDocumentoModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="uploadDocumentoForm">
+                    <div class="form-group">
+                        <label>Tipo de Documento *</label>
+                        <select name="tipoDocumentoUpload" required>
+                            <option value="">Selecione o tipo</option>
+                            <option value="duplicata">Duplicata</option>
+                            <option value="promissoria">Nota Promissória</option>
+                            <option value="cheque">Cheque</option>
+                            <option value="contrato">Contrato</option>
+                            <option value="certidao">Certidão</option>
+                            <option value="outros">Outros</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Arquivo *</label>
+                        <input type="file" name="arquivo" required accept=".pdf,.jpg,.jpeg,.png">
+                        <small style="color: var(--text-secondary);">Formatos aceitos: PDF, JPG, JPEG, PNG (máx. 10MB)</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        <textarea name="descricaoDocumento" rows="3" placeholder="Descreva o documento..."></textarea>
+                    </div>
+                    
+                    <div style="text-align: right; margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('uploadDocumentoModal')">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Upload Documento</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.section');
+            const protestoForm = document.getElementById('protestoForm');
+            const clienteForm = document.getElementById('clienteForm');
+            const certidaoForm = document.getElementById('certidaoForm');
+            const pesquisaForm = document.getElementById('pesquisaForm');
+            const menuToggle = document.querySelector('.menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+
+            // --- 1. Navegação entre seções ---
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const sectionId = link.getAttribute('data-section') + '-section';
+                    
+                    // Esconde todas as seções e remove a classe 'active' dos links
+                    sections.forEach(section => section.classList.remove('active'));
+                    navLinks.forEach(navLink => navLink.classList.remove('active'));
+
+                    // Mostra a seção correta e ativa o link
+                    const activeSection = document.getElementById(sectionId);
+                    if (activeSection) {
+                        activeSection.classList.add('active');
+                        link.classList.add('active');
+                    }
+
+                    // Em modo mobile, esconde a sidebar após o clique
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('show');
+                    }
+                });
+            });
+
+            // --- 2. Controle do Menu Lateral (Sidebar) ---
+            window.toggleSidebar = () => {
+                sidebar.classList.toggle('show');
+            };
+
+            // Fecha a sidebar se clicar fora dela em modo mobile
+            document.querySelector('.main-content').addEventListener('click', () => {
+                if (window.innerWidth <= 768 && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            });
+
+            // --- 3. Controle de Modais ---
+            window.openModal = (modalId) => {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.style.display = 'flex';
+                    modal.classList.add('active');
+                }
+            };
+
+            window.closeModal = (modalId) => {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.style.display = 'none';
+                    modal.classList.remove('active');
+                }
+            };
+
+            // Fecha o modal clicando fora do conteúdo
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeModal(modal.id);
+                    }
+                });
+            });
+
+            // --- 4. Lógica de Formulários (Simulação) ---
+            const handleFormSubmit = (form, modalId, successMessage) => {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    console.log(`Formulário ${form.id} enviado com dados:`, new FormData(form));
+                    closeModal(modalId);
+                    showNotification(successMessage, 'success');
+                });
+            };
+
+            handleFormSubmit(protestoForm, 'novoProtestoModal', 'Protesto criado com sucesso!');
+            handleFormSubmit(clienteForm, 'clienteModal', 'Cliente cadastrado com sucesso!');
+            handleFormSubmit(certidaoForm, 'certidaoModal', 'Solicitação de certidão enviada!');
+            handleFormSubmit(pesquisaForm, 'pesquisaRapidaModal', 'Pesquisa realizada!');
+            handleFormSubmit(document.getElementById('pesquisaRapidaForm'), 'pesquisaRapidaModal', 'Pesquisa rápida realizada!');
+
+            // --- 5. Funções de Notificação ---
+            window.showNotification = (message, type = 'success') => {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type} show`;
+                notification.textContent = message;
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.remove();
+                }, 4000);
+            };
+            
+            // --- 6. Funções Dinâmicas para Formulários ---
+            
+            // Modal de Cliente: Alterna entre CPF e CNPJ
+            window.toggleDocumentType = () => {
+                const tipoPessoa = document.querySelector('#clienteModal select[name="tipoPessoa"]').value;
+                const docLabel = document.getElementById('documentLabel');
+                const docInput = document.querySelector('#clienteModal input[name="documento"]');
+                const pjFields = document.getElementById('pessoaJuridicaFields');
+
+                if (tipoPessoa === 'juridica') {
+                    docLabel.textContent = 'CNPJ *';
+                    docInput.placeholder = '00.000.000/0000-00';
+                    pjFields.style.display = 'block';
+                } else {
+                    docLabel.textContent = 'CPF *';
+                    docInput.placeholder = '000.000.000-00';
+                    pjFields.style.display = 'none';
+                }
+            };
+
+            // Modal de Certidão: Alterna entre CPF e CNPJ
+            window.toggleDocumentTypeCertidao = () => {
+                const tipoPessoa = document.querySelector('#certidaoModal select[name="tipoPessoaCertidao"]').value;
+                const docLabel = document.getElementById('documentLabelCertidao');
+                const docInput = document.querySelector('#certidaoModal input[name="documentoRequerente"]');
+
+                if (tipoPessoa === 'juridica') {
+                    docLabel.textContent = 'CNPJ *';
+                    docInput.placeholder = '00.000.000/0000-00';
+                } else {
+                    docLabel.textContent = 'CPF *';
+                    docInput.placeholder = '000.000.000-00';
+                }
+            };
+
+            // Modal de Pesquisa: Atualiza o campo de busca
+            window.updateSearchFields = () => {
+                const tipoConsulta = document.querySelector('#pesquisa-section select[name="tipoConsulta"]').value;
+                const searchLabel = document.getElementById('searchLabel');
+                const searchInput = document.getElementById('searchInput');
+
+                switch(tipoConsulta) {
+                    case 'cpf':
+                        searchLabel.textContent = 'CPF';
+                        searchInput.placeholder = 'Digite o CPF';
+                        break;
+                    case 'cnpj':
+                        searchLabel.textContent = 'CNPJ';
+                        searchInput.placeholder = 'Digite o CNPJ';
+                        break;
+                    case 'nome':
+                        searchLabel.textContent = 'Nome/Razão Social';
+                        searchInput.placeholder = 'Digite o nome';
+                        break;
+                    default:
+                        searchLabel.textContent = 'Documento/Nome';
+                        searchInput.placeholder = '';
+                }
+            };
+        });
+    </script>
+</body>
+</html>
+
