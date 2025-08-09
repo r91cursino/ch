@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProtestoPro - Recuperação de Crédito Inteligente</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/landing.css') }}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <!-- Navbar -->
@@ -64,41 +65,93 @@
                                 Recuperar Crédito Agora
                             </button>
                             <button class="btn btn-outline-primary btn-lg" data-bs-toggle="modal" data-bs-target="#cadastroModal">
-                                <i class="fas fa-phone me-2"></i>
-                                Falar com Especialista
-                            </button>
+                    <!-- Seção de Resultados com Gráficos -->
+        <section id="resultados" class="py-5 bg-light">
+            <div class="container">
+                <div class="row text-center mb-5">
+                    <div class="col-12">
+                        <h2 class="display-5 fw-bold mb-3">Resultados Comprovados</h2>
+                        <p class="lead text-muted">Números que falam por si só</p>
+                    </div>
+                </div>
+                
+                <div class="row g-4 mb-5">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card">
+                            <h3 class="text-gradient">R$ 17.38M</h3>
+                            <p class="mb-0">Recuperado em 2024</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card">
+                            <h3 class="text-gradient">68%</h3>
+                            <p class="mb-0">Taxa de Sucesso</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card">
+                            <h3 class="text-gradient">2.847</h3>
+                            <p class="mb-0">Clientes Ativos</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card">
+                            <h3 class="text-gradient">35 dias</h3>
+                            <p class="mb-0">Tempo Médio</p>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
-                    <div class="hero-stats">
-                        <div class="row g-4">
-                            <div class="col-6">
-                                <div class="stat-card">
-                                    <h3 class="text-primary">R$ 15.2M</h3>
-                                    <p class="text-muted">Recuperado</p>
-                                </div>
+
+                <!-- Gráficos Profissionais -->
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-white border-0 pb-0">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-chart-bar text-primary me-2"></i>
+                                    Recuperação Mensal (2024)
+                                </h5>
+                                <p class="text-muted small mb-0">Valores recuperados por mês</p>
                             </div>
-                            <div class="col-6">
-                                <div class="stat-card">
-                                    <h3 class="text-success">68%</h3>
-                                    <p class="text-muted">Taxa de Sucesso</p>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="stat-card">
-                                    <h3 class="text-warning">2.847</h3>
-                                    <p class="text-muted">Clientes Ativos</p>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="stat-card">
-                                    <h3 class="text-info">45 dias</h3>
-                                    <p class="text-muted">Tempo Médio</p>
-                                </div>
+                            <div class="card-body">
+                                <canvas id="recoveryChart" height="300"></canvas>
                             </div>
                         </div>
                     </div>
+                    <div class="col-lg-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-white border-0 pb-0">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-chart-pie text-success me-2"></i>
+                                    Tipos de Protesto
+                                </h5>
+                                <p class="text-muted small mb-0">Distribuição por categoria</p>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="protestTypeChart" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4 mt-2">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white border-0 pb-0">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-chart-line text-info me-2"></i>
+                                    Taxa de Sucesso Anual
+                                </h5>
+                                <p class="text-muted small mb-0">Evolução da eficácia ao longo do ano</p>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="successRateChart" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>              </div>
                 </div>
             </div>
         </div>

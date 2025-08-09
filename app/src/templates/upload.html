@@ -1330,6 +1330,7 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             position: relative;
             animation: slideDown 0.5s ease-out;
+            overflow: hidden;
         }
 
         .welcome-banner .container {
@@ -1339,10 +1340,12 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            position: relative;
+            z-index: 2;
         }
 
         .welcome-content h5 {
-            margin: 0 0 0.5rem 0;
+            margin: 0 0 0.25rem 0;
             font-size: 1.25rem;
             font-weight: 600;
         }
@@ -1368,6 +1371,17 @@
             background-color: rgba(255, 255, 255, 0.2);
         }
 
+        /* Canvas para confetes */
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
         @keyframes slideDown {
             from {
                 transform: translateY(-100%);
@@ -1379,11 +1393,26 @@
             }
         }
 
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+        }
+
+        .welcome-banner.closing {
+            animation: fadeOut 0.5s ease-out forwards;
+        }
+
         @media (max-width: 768px) {
             .welcome-banner .container {
                 flex-direction: column;
                 text-align: center;
-                gap: 1rem;
+                gap: 0.5rem;
             }
             
             .welcome-content h5 {
@@ -1398,22 +1427,24 @@
 </head>
 <body>
     {% if source %}
-    <div class="welcome-banner">
+    <div class="welcome-banner" id="welcomeBanner">
         <div class="container">
             <div class="welcome-content">
                 <h5>🎉 Bem-vindo ao ProtestoPro{% if nome %}, {{ nome }}{% endif %}!</h5>
                 <p>
                     {% if plan == 'basico' %}
-                        Você escolheu o <strong>Plano Básico</strong>. Comece fazendo upload dos seus títulos para protesto.
+                        <strong>Plano Básico</strong> ativado! Comece agora.
                     {% elif plan == 'profissional' %}
-                        Você escolheu o <strong>Plano Profissional</strong>. Aproveite todos os recursos avançados da plataforma.
+                        <strong>Plano Profissional</strong> ativado! Aproveite todos os recursos.
                     {% else %}
-                        Você foi redirecionado da nossa landing page. Comece fazendo upload dos seus títulos para protesto.
+                        Sua conta foi criada com sucesso!
                     {% endif %}
                 </p>
             </div>
-            <button class="btn-close-banner" onclick="this.parentElement.parentElement.style.display='none'">×</button>
+            <button class="btn-close-banner" onclick="closeBanner()">×</button>
         </div>
+        <!-- Canvas para confetes -->
+        <canvas id="confetti-canvas"></canvas>
     </div>
     {% endif %}
     <!-- Mobile menu toggle -->
@@ -3397,6 +3428,95 @@
                         searchInput.placeholder = '';
                 }
             };
+        });
+
+        // Função para fechar o banner com animação
+        function closeBanner() {
+            const banner = document.getElementById('welcomeBanner');
+            if (banner) {
+                banner.classList.add('closing');
+                setTimeout(() => {
+                    banner.style.display = 'none';
+                }, 500);
+            }
+        }
+
+        // Função para criar confetes
+        function createConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+
+            const confetti = [];
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dda0dd', '#98d8c8'];
+
+            // Criar partículas de confete
+            for (let i = 0; i < 50; i++) {
+                confetti.push({
+                    x: Math.random() * canvas.width,
+                    y: -10,
+                    vx: (Math.random() - 0.5) * 4,
+                    vy: Math.random() * 3 + 2,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    size: Math.random() * 8 + 4,
+                    rotation: Math.random() * 360,
+                    rotationSpeed: (Math.random() - 0.5) * 10
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                for (let i = confetti.length - 1; i >= 0; i--) {
+                    const particle = confetti[i];
+                    
+                    // Atualizar posição
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    particle.rotation += particle.rotationSpeed;
+                    
+                    // Aplicar gravidade
+                    particle.vy += 0.1;
+                    
+                    // Desenhar partícula
+                    ctx.save();
+                    ctx.translate(particle.x, particle.y);
+                    ctx.rotate(particle.rotation * Math.PI / 180);
+                    ctx.fillStyle = particle.color;
+                    ctx.fillRect(-particle.size/2, -particle.size/2, particle.size, particle.size);
+                    ctx.restore();
+                    
+                    // Remover partículas que saíram da tela
+                    if (particle.y > canvas.height + 10) {
+                        confetti.splice(i, 1);
+                    }
+                }
+
+                if (confetti.length > 0) {
+                    requestAnimationFrame(animate);
+                }
+            }
+
+            animate();
+        }
+
+        // Inicializar confetes quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            const welcomeBanner = document.getElementById('welcomeBanner');
+            if (welcomeBanner) {
+                // Aguardar um pouco para o banner aparecer completamente
+                setTimeout(() => {
+                    createConfetti();
+                }, 500);
+
+                // Auto-fechar o banner após 8 segundos
+                setTimeout(() => {
+                    closeBanner();
+                }, 8000);
+            }
         });
     </script>
 </body>

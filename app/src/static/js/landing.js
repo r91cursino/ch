@@ -1,5 +1,8 @@
 // Landing Page JavaScript
 document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar gráficos
+    initializeCharts();
+    
     // Smooth scroll para links de navegação
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -65,6 +68,207 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(el);
     });
 });
+
+// Função para inicializar os gráficos
+function initializeCharts() {
+    // Dados dos gráficos
+    const recoveryData = {
+        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+        datasets: [{
+            label: 'Valor Recuperado (R$)',
+            data: [980000, 1200000, 1400000, 1100000, 1600000, 1800000, 1500000, 1700000, 1900000, 1300000, 1400000, 1500000],
+            backgroundColor: 'rgba(59, 130, 246, 0.8)',
+            borderColor: 'rgba(59, 130, 246, 1)',
+            borderWidth: 2,
+            borderRadius: 8,
+            borderSkipped: false,
+        }]
+    };
+
+    const protestTypeData = {
+        labels: ['Duplicatas', 'Cheques', 'Notas Promissórias', 'Outros'],
+        datasets: [{
+            data: [45, 30, 15, 10],
+            backgroundColor: [
+                'rgba(59, 130, 246, 0.8)',
+                'rgba(16, 185, 129, 0.8)',
+                'rgba(139, 92, 246, 0.8)',
+                'rgba(245, 158, 11, 0.8)'
+            ],
+            borderColor: [
+                'rgba(59, 130, 246, 1)',
+                'rgba(16, 185, 129, 1)',
+                'rgba(139, 92, 246, 1)',
+                'rgba(245, 158, 11, 1)'
+            ],
+            borderWidth: 2
+        }]
+    };
+
+    const successRateData = {
+        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+        datasets: [{
+            label: 'Taxa de Sucesso (%)',
+            data: [62, 65, 68, 64, 70, 72, 69, 71, 74, 67, 68, 68],
+            backgroundColor: 'rgba(6, 182, 212, 0.2)',
+            borderColor: 'rgba(6, 182, 212, 1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: 'rgba(6, 182, 212, 1)',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 6,
+            pointHoverRadius: 8
+        }]
+    };
+
+    // Configurações comuns dos gráficos
+    const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top',
+                labels: {
+                    usePointStyle: true,
+                    padding: 20,
+                    font: {
+                        size: 12,
+                        family: "'Segoe UI', sans-serif"
+                    }
+                }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                titleColor: '#fff',
+                bodyColor: '#fff',
+                borderColor: 'rgba(255, 255, 255, 0.1)',
+                borderWidth: 1,
+                cornerRadius: 8,
+                displayColors: true,
+                callbacks: {
+                    label: function(context) {
+                        if (context.chart.canvas.id === 'recoveryChart') {
+                            return `${context.dataset.label}: R$ ${(context.parsed.y / 1000000).toFixed(1)}M`;
+                        } else if (context.chart.canvas.id === 'protestTypeChart') {
+                            return `${context.label}: ${context.parsed}%`;
+                        } else {
+                            return `${context.dataset.label}: ${context.parsed.y}%`;
+                        }
+                    }
+                }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: {
+                    color: 'rgba(0, 0, 0, 0.1)',
+                    drawBorder: false
+                },
+                ticks: {
+                    font: {
+                        size: 11
+                    },
+                    callback: function(value) {
+                        if (this.chart.canvas.id === 'recoveryChart') {
+                            return 'R$ ' + (value / 1000000).toFixed(1) + 'M';
+                        } else {
+                            return value + '%';
+                        }
+                    }
+                }
+            },
+            x: {
+                grid: {
+                    display: false
+                },
+                ticks: {
+                    font: {
+                        size: 11
+                    }
+                }
+            }
+        }
+    };
+
+    // Gráfico de Recuperação Mensal
+    const recoveryCtx = document.getElementById('recoveryChart');
+    if (recoveryCtx) {
+        new Chart(recoveryCtx, {
+            type: 'bar',
+            data: recoveryData,
+            options: {
+                ...commonOptions,
+                plugins: {
+                    ...commonOptions.plugins,
+                    title: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+
+    // Gráfico de Tipos de Protesto
+    const protestTypeCtx = document.getElementById('protestTypeChart');
+    if (protestTypeCtx) {
+        new Chart(protestTypeCtx, {
+            type: 'doughnut',
+            data: protestTypeData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 15,
+                            font: {
+                                size: 11
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        borderColor: 'rgba(255, 255, 255, 0.1)',
+                        borderWidth: 1,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.parsed}%`;
+                            }
+                        }
+                    }
+                },
+                cutout: '60%'
+            }
+        });
+    }
+
+    // Gráfico de Taxa de Sucesso
+    const successRateCtx = document.getElementById('successRateChart');
+    if (successRateCtx) {
+        new Chart(successRateCtx, {
+            type: 'line',
+            data: successRateData,
+            options: {
+                ...commonOptions,
+                plugins: {
+                    ...commonOptions.plugins,
+                    title: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+}
 
 // Função para submeter cadastro
 function submitCadastro() {
